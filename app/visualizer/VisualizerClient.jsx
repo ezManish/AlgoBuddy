@@ -2,7 +2,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Search, ChevronRight } from "lucide-react";
+import { FiArrowLeft, FiSearch, FiChevronRight } from "react-icons/fi";
 
 /* ─── colour + icon theme per DS ─── */
 const DS_THEME = {
@@ -301,7 +301,7 @@ function DSCard({ section, theme, onClick, delay }) {
             style={{ background: theme.color }}
           >
             Explore {section.title}
-            <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-200" />
+            <FiChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-200" />
           </div>
         </div>
       </div>
@@ -334,7 +334,7 @@ function ModuleView({ section, theme, onBack }) {
           className="inline-flex items-center gap-2 text-[13px] font-bold text-surface-500 dark:text-surface-400
             hover:text-surface-900 dark:hover:text-surface-100 transition-colors duration-200 mb-5"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to all topics
+          <FiArrowLeft className="w-4 h-4" /> Back to all topics
         </button>
 
         <div className="flex items-center gap-4 mb-3">
@@ -391,7 +391,7 @@ function ModuleView({ section, theme, onBack }) {
                       {item.name}
                     </span>
                   </div>
-                  <ChevronRight
+                  <FiChevronRight
                     className="w-4 h-4 text-surface-300 dark:text-surface-500 group-hover/item:translate-x-1 transition-all duration-200"
                     style={{ color: theme.color + "60" }}
                   />
@@ -497,6 +497,26 @@ export default function VisualizerClient({ initialSections }) {
               Pick any data structure, tap an algorithm, and watch it run step
               by step. Learning DSA has never been this fun.
             </p>
+
+            {/* Search Bar */}
+            <div className="relative max-w-[480px] mx-auto mt-8">
+              <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#9ca3af]" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search algorithms and topics..."
+                className="w-full h-[52px] pl-12 pr-4 rounded-2xl border border-[#e5e7eb] dark:border-[#333] bg-white dark:bg-[#1a1a1a] text-[#1a1a1a] dark:text-white placeholder-[#9ca3af] text-[15px] shadow-sm focus:outline-none focus:border-[#a435f0] focus:ring-2 focus:ring-[#a435f0]/20 transition-all"
+              />
+              {search && (
+                <button
+                  onClick={() => setSearch("")}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9ca3af] hover:text-[#1a1a1a] dark:hover:text-white transition-colors"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
           </div>
 
           <AnimatePresence mode="wait">
@@ -539,7 +559,7 @@ export default function VisualizerClient({ initialSections }) {
                                 {item.ds}
                               </span>
                             </div>
-                            <ChevronRight className="w-4 h-4 text-surface-300 dark:text-surface-500 group-hover/r:translate-x-1 transition-all" />
+                            <FiChevronRight className="w-4 h-4 text-surface-300 dark:text-surface-500 group-hover/r:translate-x-1 transition-all" />
                           </Link>
                         );
                       })}
@@ -548,7 +568,7 @@ export default function VisualizerClient({ initialSections }) {
                 ) : (
                   <div className="text-center py-16">
                     <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-surface-100 dark:bg-surface-800">
-                      <Search className="h-6 w-6 text-surface-400" />
+                      <FiSearch className="h-6 w-6 text-surface-400" />
                     </div>
                     <h3 className="text-2xl font-bold text-surface-900 dark:text-white mb-2">
                       No results found

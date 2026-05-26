@@ -9,6 +9,7 @@ const TOPICS = [
   { label: "Binary Search",       color: "#2563eb", bg: "#eff6ff", darkBg: "#1a2744", darkColor: "#60a5fa" },
   { label: "Graph Traversal",     color: "#059669", bg: "#f0fdf4", darkBg: "#0f2e22", darkColor: "#34d399" },
   { label: "Linked Lists",        color: "#d97706", bg: "#fffbeb", darkBg: "#2e1f0a", darkColor: "#fbbf24" },
+  { label: "Hashmap",             color: "#0ea5e9", bg: "#f0f9ff", darkBg: "#0a2434", darkColor: "#38bdf8" },
   { label: "Dynamic Programming", color: "#dc2626", bg: "#fef2f2", darkBg: "#2e0f0f", darkColor: "#f87171" },
   { label: "Stack & Queue",       color: "#7c3aed", bg: "#f5f3ff", darkBg: "#1e1535", darkColor: "#a78bfa" },
 ];
@@ -62,22 +63,34 @@ const HeroSection = () => {
             </h1>
 
             {/* animated topic pill */}
-            <div className="flex items-center gap-3 h-10">
+            <div className="flex items-center gap-3 h-12">
               <span
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[14px] font-bold transition-all duration-300"
+                key={topic.label}
+                className={`algo-pill relative inline-flex items-center gap-2 px-5 py-2 rounded-full text-[14px] font-bold backdrop-blur-sm ${
+                  visible ? "pill-enter" : "pill-exit"
+                }`}
                 style={{
-                  background: visible ? (isDark ? topic.darkBg  : topic.bg)    : "transparent",
+                  background: visible ? `linear-gradient(120deg, ${isDark ? topic.darkBg : topic.bg} 0%, ${isDark ? "#1a1f28" : "#ffffff"} 100%)` : "transparent",
                   color:      visible ? (isDark ? topic.darkColor : topic.color) : "transparent",
-                  opacity:    visible ? 1 : 0,
-                  transform:  visible ? "translateY(0px)" : "translateY(6px)",
-                  border: `1.5px solid ${visible ? (isDark ? topic.darkColor + "55" : topic.color + "33") : "transparent"}`,
+                  border: `1.5px solid ${visible ? (isDark ? topic.darkColor + "66" : topic.color + "44") : "transparent"}`,
+                  boxShadow: visible ? `0 10px 24px ${isDark ? topic.darkColor + "24" : topic.color + "26"}` : "none",
                 }}
               >
                 <span
                   className="w-2 h-2 rounded-full flex-shrink-0"
-                  style={{ background: isDark ? topic.darkColor : topic.color }}
+                  style={{
+                    background: isDark ? topic.darkColor : topic.color,
+                    boxShadow: `0 0 0 6px ${(isDark ? topic.darkColor : topic.color)}22`,
+                  }}
                 />
                 {topic.label}
+                <span
+                  className="pointer-events-none absolute inset-0 rounded-full opacity-40"
+                  style={{
+                    background: "linear-gradient(90deg, transparent 20%, rgba(255,255,255,0.55) 50%, transparent 80%)",
+                    animation: visible ? "pillShine 2.2s linear infinite" : "none",
+                  }}
+                />
               </span>
             </div>
 
@@ -238,7 +251,7 @@ const HeroSection = () => {
               </div>
 
               {/* ── floating badge top-right ── */}
-              <div className="absolute -top-4 -right-4 flex items-center gap-2 bg-white dark:bg-[#2d2f31] border border-[#d1d7dc] dark:border-[#3e4143] rounded-full pl-2.5 pr-4 py-2 shadow-xl text-[13px] font-semibold text-[#1c1d1f] dark:text-[#f7f9fa]">
+              <div className="floating-pop absolute -top-4 -right-4 flex items-center gap-2 bg-white dark:bg-[#2d2f31] border border-[#d1d7dc] dark:border-[#3e4143] rounded-full pl-2.5 pr-4 py-2 shadow-xl text-[13px] font-semibold text-[#1c1d1f] dark:text-[#f7f9fa]">
                 <span className="w-7 h-7 rounded-full bg-[#a435f0] flex items-center justify-center text-white text-[11px] font-bold">
                   O
                 </span>
@@ -246,7 +259,7 @@ const HeroSection = () => {
               </div>
 
               {/* ── floating badge bottom-left ── */}
-              <div className="absolute -bottom-4 -left-4 flex items-center gap-2 bg-white dark:bg-[#2d2f31] border border-[#d1d7dc] dark:border-[#3e4143] rounded-full pl-2.5 pr-4 py-2 shadow-xl text-[13px] font-semibold text-[#1c1d1f] dark:text-[#f7f9fa]">
+              <div className="floating-pop absolute -bottom-4 -left-4 flex items-center gap-2 bg-white dark:bg-[#2d2f31] border border-[#d1d7dc] dark:border-[#3e4143] rounded-full pl-2.5 pr-4 py-2 shadow-xl text-[13px] font-semibold text-[#1c1d1f] dark:text-[#f7f9fa]" style={{ animationDelay: "180ms" }}>
                 <span className="w-7 h-7 rounded-full bg-[#28c840] flex items-center justify-center text-white text-[11px] font-bold">
                   ✓
                 </span>
@@ -259,6 +272,41 @@ const HeroSection = () => {
           </div>
         </div>
       </section>
+      <style jsx>{`
+        @keyframes popFloat {
+          0% { transform: translateY(2px); opacity: 0.96; }
+          50% { transform: translateY(-5px); opacity: 1; }
+          100% { transform: translateY(2px); opacity: 0.96; }
+        }
+
+        @keyframes pillShine {
+          0% { transform: translateX(-120%); }
+          100% { transform: translateX(120%); }
+        }
+
+        @keyframes pillPopIn {
+          0% { opacity: 0; transform: translateY(10px) scale(0.9); }
+          65% { opacity: 1; transform: translateY(-2px) scale(1.04); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes pillFadeOut {
+          0% { opacity: 1; transform: translateY(0) scale(1); }
+          100% { opacity: 0; transform: translateY(8px) scale(0.96); }
+        }
+
+        .floating-pop {
+          animation: popFloat 5.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+        }
+
+        .pill-enter {
+          animation: pillPopIn 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        .pill-exit {
+          animation: pillFadeOut 320ms ease-in both;
+        }
+      `}</style>
     </main>
   );
 };

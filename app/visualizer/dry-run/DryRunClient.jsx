@@ -497,8 +497,6 @@ export default function DryRunClient() {
             </label>
           </div>
 
-<<<<<<< Updated upstream
-=======
           <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900/60">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
@@ -735,7 +733,6 @@ export default function DryRunClient() {
             </div>
           </div>
 
->>>>>>> Stashed changes
           <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
             <h2 className="font-semibold text-slate-900 dark:text-white">Active line</h2>
             <div className="mt-3 max-h-64 overflow-auto rounded-lg bg-slate-950 p-3 font-mono text-sm text-slate-200">

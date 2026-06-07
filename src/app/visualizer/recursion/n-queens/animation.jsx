@@ -52,7 +52,7 @@ const NQueensAnimation = () => {
   }, [isPlaying, currentFrame, frames.length, speed]);
 
   const handleGo = (e) => {
-    if (e) e.preventDefault();
+    e.preventDefault();
     setCurrentFrame(0);
     setIsVisualizing(true);
     setIsPlaying(true);
@@ -65,10 +65,6 @@ const NQueensAnimation = () => {
   };
 
   const togglePlay = () => {
-    if (!isVisualizing) {
-      handleGo();
-      return;
-    }
     if (currentFrame === frames.length - 1) {
       setCurrentFrame(0);
       setIsPlaying(true);

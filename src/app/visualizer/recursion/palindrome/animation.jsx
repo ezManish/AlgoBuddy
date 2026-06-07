@@ -49,7 +49,7 @@ const PalindromeAnimation = () => {
   }, [isPlaying, currentFrame, frames.length, speed]);
 
   const handleGo = (e) => {
-    if (e) e.preventDefault();
+    e.preventDefault();
     const str = stringInput.trim();
     if (!str) {
       setErrorMsg("Please enter a valid string.");
@@ -80,10 +80,6 @@ const PalindromeAnimation = () => {
   };
 
   const togglePlay = () => {
-    if (!isVisualizing) {
-      handleGo();
-      return;
-    }
     if (currentFrame === frames.length - 1) {
       setCurrentFrame(0);
       setIsPlaying(true);

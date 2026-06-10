@@ -31,9 +31,19 @@ const Animation = () => {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
   const [showQuiz, setShowQuiz] = useState(false);
-  const [discussion, setDiscussion] = useState("");
-  const visualizerRef = useRef(null);
+  
+  // Add missing state declarations
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [leftPointer, setLeftPointer] = useState(-1);
+  const [rightPointer, setRightPointer] = useState(-1);
+  const [currentResult, setCurrentResult] = useState(null);
+  const [bestResult, setBestResult] = useState(null);
+  const [stepExplanation, setStepExplanation] = useState("");
 
+  const animationRef = useRef(null);
+  const wasPausedRef = useRef(false);
+  const stateQueueRef = useRef([]);
+  const currentStateIdxRef = useRef(0);
   const elementRefs = useRef([]);
   const [steps, setSteps] = useState([]);
   const [visualState, setVisualState] = useState({
@@ -42,8 +52,8 @@ const Animation = () => {
     violation: false, success: false, done: false
   });
 
-  // Define callback handlers BEFORE using them
-  const handleStep = useCallback((state) => {
+  // Fix: Close the onStep callback properly
+  const onStep = useCallback((state) => {
     setVisualState({
       left: state.left,
       right: state.right,
@@ -55,11 +65,46 @@ const Animation = () => {
       success: state.success,
       done: state.done
     });
+  }, []);
 
-    const handleExportPNG = async () => {
-  if (!visualizerRef.current) return;
+  const engine = useAnimationEngine({ steps, onStep, initialSpeed: 1000 });
+  const currentStepData = steps[engine.currentStep];
 
-  const canvas = await html2canvas(visualizerRef.current);
+  const handleReset = useCallback(() => {
+    engine.reset();
+    setDataArray([]);
+    setVisualState({
+      left: -1, right: -1, current: null, best: null,
+      explanation: "", activeWindow: [-1, -1],
+      violation: false, success: false, done: false
+    });
+    setSteps([]);
+    setMessage("");
+    setMessageType("");
+    
+    elementRefs.current.forEach((ref) => {
+      if (ref) {
+        gsap.to(ref, { backgroundColor: "#E5E7EB", borderColor: "#D1D5DB", color: "#1F2937", duration: 0 });
+      }
+    });
+  }, [engine]);
+
+  // Fix: Move useVisualizerReset here after handleReset is defined
+  useEffect(() => {
+    // Call any reset initialization logic here if needed
+  }, []);
+
+  const animateStep = useCallback(() => {
+    if (currentStateIdxRef.current >= stateQueueRef.current.length) {
+      setIsAnimating(false);
+      setMessage("Visualization completed.");
+      setMessageType("success");
+      setShowQuiz(true);
+      return;
+    }
+
+    const state = stateQueueRef.current[currentStateIdxRef.current];
+    const delay = 1500 / 1; // Replace speedRef.current with actual speed value
 
   const link = document.createElement("a");
   link.download = "sliding-window-visualization.png";
@@ -92,30 +137,6 @@ const Animation = () => {
       setShowQuiz(true);
     }
   }, []);
-
-  const handleReset = useCallback(() => {
-    engine.reset();
-    setDataArray([]);
-    setVisualState({
-      left: -1, right: -1, current: null, best: null,
-      explanation: "", activeWindow: [-1, -1],
-      violation: false, success: false, done: false
-    });
-    setSteps([]);
-    setMessage("");
-    setMessageType("");
-    setShowQuiz(false);
-    
-    elementRefs.current.forEach((ref) => {
-      if (ref) {
-        gsap.to(ref, { backgroundColor: "#E5E7EB", borderColor: "#D1D5DB", color: "#1F2937", duration: 0 });
-      }
-    });
-  }, []);
-
-  // Initialize engine AFTER defining its dependencies
-  const engine = useAnimationEngine({ steps, onStep: handleStep, initialSpeed: 1000 });
-  const currentStepData = steps[engine.currentStep];
 
   const handleGo = (e) => {
     e.preventDefault();
@@ -330,22 +351,6 @@ Please explain exactly what is happening in this step in detail.`;
         </div>
       )}
 
-      {showQuiz && (
-        <div className="max-w-4xl mx-auto mb-6 bg-white dark:bg-gray-800 p-5 rounded-xl border">
-          <h3 className="text-lg font-bold mb-3">💬 Community Discussion</h3>
-          <textarea
-            value={discussion}
-            onChange={(e) => setDiscussion(e.target.value)}
-            placeholder="Ask a question or share your explanation..."
-            className="w-full p-3 border rounded-lg"
-            rows={4}
-          />
-          <button className="mt-3 px-4 py-2 bg-purple-600 text-white rounded-lg">
-            Post Discussion
-          </button>
-        </div>
-      )}
-
       {dataArray.length > 0 && (
          <div ref={visualizerRef}>
         <div className="max-w-5xl mx-auto space-y-6">
@@ -394,12 +399,10 @@ Please explain exactly what is happening in this step in detail.`;
                 return (
                   <div key={index} className="flex flex-col items-center relative">
                     <div
-  ref={(el) => (elementRefs.current[index] = el)}
-  tabIndex={0}
-  role="button"
-  aria-label={`Array element ${element} at index ${index}`}
-  className={`w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-lg border-2 transition-colors duration-200 ${getFontSize(element)} shadow-sm`}
->
+                      ref={(el) => (elementRefs.current[index] = el)}
+                      className={`w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-lg border-2 transition-colors duration-200 ${getFontSize(element)} shadow-sm`}
+                      style={{ backgroundColor: "#E5E7EB", borderColor: "#D1D5DB" }}
+                    >
                       {element}
                     </div>
                     

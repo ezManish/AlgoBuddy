@@ -1,12 +1,18 @@
 "use client";
-import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { gsap } from "gsap";
 import ResetButton from "@/app/components/ui/resetButton";
 import GoButton from "@/app/components/ui/goButton";
 import PlaybackControls from "@/app/components/ui/PlaybackControls";
 import useVisualizerKeyboard from "@/app/hooks/useVisualizerKeyboard";
 import { useAnimationEngine } from "@/lib/visualizer/useAnimationEngine";
-import { generateStatesFixedMax, generateStatesFixedAvg, generateStatesVarLongestSub, generateStatesVarSmallestSub } from "@/features/algorithms/array/slidingWindowLogic";
+import html2canvas from "html2canvas";
+import { 
+  generateStatesFixedMax, 
+  generateStatesFixedAvg, 
+  generateStatesVarLongestSub, 
+  generateStatesVarSmallestSub 
+} from "@/features/algorithms/array/slidingWindowLogic";
 
 const PROBLEMS = {
   FIXED_MAX: "fixed-max",
@@ -15,6 +21,7 @@ const PROBLEMS = {
   VAR_SMALLEST_SUB: "var-smallest-sub",
 };
 
+// Define component BEFORE using it
 const Animation = () => {
   const [problemType, setProblemType] = useState(PROBLEMS.FIXED_MAX);
   const [inputData, setInputData] = useState("2, 1, 5, 1, 3, 2");
@@ -23,7 +30,6 @@ const Animation = () => {
   const [dataArray, setDataArray] = useState([]);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
-  const [pendingStart, setPendingStart] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
   
   // Add missing state declarations
@@ -39,7 +45,6 @@ const Animation = () => {
   const stateQueueRef = useRef([]);
   const currentStateIdxRef = useRef(0);
   const elementRefs = useRef([]);
-
   const [steps, setSteps] = useState([]);
   const [visualState, setVisualState] = useState({
     left: -1, right: -1, current: null, best: null,
@@ -101,13 +106,12 @@ const Animation = () => {
     const state = stateQueueRef.current[currentStateIdxRef.current];
     const delay = 1500 / 1; // Replace speedRef.current with actual speed value
 
-    setLeftPointer(state.left);
-    setRightPointer(state.right);
-    setCurrentResult(state.current);
-    setBestResult(state.best);
-    setStepExplanation(state.explanation);
+  const link = document.createElement("a");
+  link.download = "sliding-window-visualization.png";
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+};
 
-    // GSAP highlighting
     elementRefs.current.forEach((ref, index) => {
       if (!ref) return;
       const [start, end] = state.activeWindow;
@@ -131,9 +135,6 @@ const Animation = () => {
       setMessage("Visualization completed.");
       setMessageType("success");
       setShowQuiz(true);
-    } else {
-      setMessage("");
-      setMessageType("");
     }
   }, []);
 
@@ -351,6 +352,7 @@ Please explain exactly what is happening in this step in detail.`;
       )}
 
       {dataArray.length > 0 && (
+         <div ref={visualizerRef}>
         <div className="max-w-5xl mx-auto space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-white dark:bg-gray-800 p-5 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col justify-center">
@@ -360,9 +362,13 @@ Please explain exactly what is happening in this step in detail.`;
                   Current Step
                 </span>
               </div>
-              <p className="text-gray-700 dark:text-gray-200 text-base leading-relaxed font-mono min-h-[3rem]">
-                {visualState.explanation || "Ready to begin..."}
-              </p>
+              </div>
+              <p
+  aria-live="polite"
+  className="text-gray-700 dark:text-gray-200 text-base leading-relaxed font-mono min-h-[3rem]"
+>
+  {visualState.explanation || "Ready to begin..."}
+</p>
             </div>
             
             <div className="bg-white dark:bg-gray-800 p-5 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm grid grid-cols-2 gap-4 text-center">
@@ -438,4 +444,5 @@ Please explain exactly what is happening in this step in detail.`;
   );
 };
 
+// Export the component
 export default Animation;

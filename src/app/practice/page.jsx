@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import jsPDF from "jspdf";
 import { toast } from "react-hot-toast";
 import { 
   Search, 
@@ -301,6 +302,32 @@ export default function PracticePage() {
     return user.user_metadata?.name || user.email?.split("@")[0] || "Guest User";
   }, [user]);
 
+  const downloadReport = () => {
+  const doc = new jsPDF();
+
+  doc.setFontSize(20);
+  doc.text("AlgoBuddy Progress Report", 20, 20);
+
+  doc.setFontSize(12);
+
+  doc.text(`User: ${userName}`, 20, 40);
+  doc.text(`Total Problems: ${stats.total}`, 20, 50);
+  doc.text(`Solved Problems: ${stats.solved}`, 20, 60);
+  doc.text(`Attempted Problems: ${stats.attempted}`, 20, 70);
+  doc.text(`Remaining Problems: ${stats.remaining}`, 20, 80);
+
+  doc.text(`Daily Solved: ${stats.dailySolved}`, 20, 100);
+  doc.text(`Weekly Solved: ${stats.weeklySolved}`, 20, 110);
+  doc.text(`Monthly Solved: ${stats.monthlySolved}`, 20, 120);
+
+  doc.text(`Current Streak: ${currentStreak}`, 20, 140);
+  doc.text(`Longest Streak: ${longestStreak}`, 20, 150);
+
+  doc.text(`Generated On: ${new Date().toLocaleString()}`, 20, 170);
+
+  doc.save("algobuddy-progress-report.pdf");
+};
+
   // Seed values if not loaded
   if (!mounted) return null;
 
@@ -402,6 +429,12 @@ export default function PracticePage() {
                 View Arena →
               </Link>
             </div>
+            <button
+  onClick={downloadReport}
+  className="mt-4 w-full py-2 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition"
+>
+  Download Progress Report
+</button>
 
           </div>
         </div>

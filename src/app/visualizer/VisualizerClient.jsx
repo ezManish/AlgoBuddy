@@ -450,11 +450,6 @@ function DSCard({ section, theme, delay }) {
    ═══════════════════════════════════════ */
 export default function VisualizerClient({ initialSections }) {
   const [search, setSearch] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("All");
-  const [difficultyFilter, setDifficultyFilter] = useState("All");
-  const [complexityFilter, setComplexityFilter] = useState("All");
-  const [contentTypeFilter, setContentTypeFilter] = useState("All");
-  const [sortBy, setSortBy] = useState("Default");
   const { addBookmark, removeBookmark, isBookmarked } = useBookmark();
 const searchRef = useRef(null);
 const [searchHistory, setSearchHistory] = useState(() => {
@@ -541,55 +536,12 @@ if(search){
  );
 }
 
-
-if(categoryFilter !== "All"){
- results = results.filter(
- item => item.ds === categoryFilter
- );
-}
-
-
-if(difficultyFilter !== "All"){
- results = results.filter(
- item => item.difficulty === difficultyFilter
- );
-}
-
-
-if(complexityFilter !== "All"){
- results = results.filter(
- item => item.complexity === complexityFilter
- );
-}
-
-
-if(sortBy==="Alphabetical"){
- results.sort((a,b)=>a.name.localeCompare(b.name));
-}
-
-
-if(sortBy==="Popular"){
- results.sort((a,b)=>b.popularity-a.popularity);
-}
-
-
-if(sortBy==="Recent"){
- results.sort(
- (a,b)=>new Date(b.updatedAt)-new Date(a.updatedAt)
- );
-}
-
-
 return results;
 
 },
 [
 search,
-initialSections,
-categoryFilter,
-difficultyFilter,
-complexityFilter,
-sortBy
+initialSections
 ]);
 
   return (
@@ -653,69 +605,7 @@ sortBy
                 </button>
               )}
             </div>
-
-            <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center">
-              <div className="min-w-[180px] sm:max-w-[240px] w-full">
-                <select
-                  value={difficultyFilter}
-                  onChange={(e) => setDifficultyFilter(e.target.value)}
-                  className="w-full h-[52px] px-4 rounded-2xl border border-[#e5e7eb] dark:border-[#333] bg-white dark:bg-[#1a1a1a] text-[#1a1a1a] dark:text-white"
-                >
-                  <option>All</option>
-                  <option>Beginner</option>
-                  <option>Intermediate</option>
-                  <option>Advanced</option>
-                </select>
-              </div>
-            </div>
           </div>
-
-          <div className="flex flex-wrap gap-3 justify-center mb-10">
-
-<select 
- value={categoryFilter}
- onChange={(e)=>setCategoryFilter(e.target.value)}
- className="p-2 rounded border">
-
-<option>All</option>
-<option>Array</option>
-<option>Stack</option>
-<option>Queue</option>
-<option>Linked List</option>
-<option>Tree</option>
-<option>Graph</option>
-<option>HashMap</option>
-</select>
-
-
-<select
- value={complexityFilter}
- onChange={(e)=>setComplexityFilter(e.target.value)}
- className="p-2 rounded border">
-
-<option>All</option>
-<option>O(1)</option>
-<option>O(log n)</option>
-<option>O(n)</option>
-<option>O(n log n)</option>
-<option>O(n²)</option>
-
-</select>
-
-
-<select
- value={sortBy}
- onChange={(e)=>setSortBy(e.target.value)}
- className="p-2 rounded border">
-
-<option>Default</option>
-<option>Alphabetical</option>
-<option>Popular</option>
-<option>Recent</option>
-
-</select>
-
-</div>
 
           {search.trim() ? (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.25 }}>

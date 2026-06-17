@@ -12,6 +12,8 @@ import BackToTop from "../components/ui/backtotop";
 import BookmarkSection from "@/app/components/ui/BookmarkSection";
 import KeyboardShortcuts from "@/app/components/KeyboardShortcuts";
 import AlgorithmNotes from "@/app/components/AlgorithmNotes";
+import GamifiedLeaderboard from "@/app/components/GamifiedLeaderboard";
+import LearningChallenges from "@/app/components/LearningChallenges";
 
 export const metadata = {
   title: "Algorithm Visualizer | AlgoBuddy",

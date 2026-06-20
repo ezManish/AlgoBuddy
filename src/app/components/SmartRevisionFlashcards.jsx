@@ -2,34 +2,63 @@
 
 import React, { useState } from "react";
 
-const flashcards = [
-  {
-    topic: "Binary Search",
-    question: "What is the time complexity of Binary Search?",
-    answer: "O(log n)",
-  },
-  {
-    topic: "Merge Sort",
-    question: "What is the average time complexity of Merge Sort?",
-    answer: "O(n log n)",
-  },
-  {
-    topic: "Stack",
-    question: "Which principle does a Stack follow?",
-    answer: "LIFO (Last In First Out)",
-  },
-];
+const flashcards = {
+  Easy: [
+    {
+      topic: "Array",
+      question: "What is an Array?",
+      answer: "A collection of elements stored in contiguous memory.",
+    },
+    {
+      topic: "Stack",
+      question: "Which principle does Stack follow?",
+      answer: "LIFO (Last In First Out).",
+    },
+  ],
+
+  Medium: [
+    {
+      topic: "Binary Search",
+      question: "What is the time complexity of Binary Search?",
+      answer: "O(log n)",
+    },
+    {
+      topic: "Merge Sort",
+      question: "What is the average time complexity of Merge Sort?",
+      answer: "O(n log n)",
+    },
+  ],
+
+  Hard: [
+    {
+      topic: "AVL Tree",
+      question: "What is the purpose of AVL Tree rotations?",
+      answer: "To keep the tree balanced after insertions and deletions.",
+    },
+    {
+      topic: "Dynamic Programming",
+      question: "What is memoization?",
+      answer: "Storing results of expensive computations to avoid recalculation.",
+    },
+  ],
+};
 
 export default function SmartRevisionFlashcards() {
+  const [difficulty, setDifficulty] = useState("Easy");
   const [index, setIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
-  const [difficulty, setDifficulty] = useState("");
+
+  const currentCards = flashcards[difficulty];
 
   const nextCard = () => {
-    setIndex((index + 1) % flashcards.length);
+    setIndex((index + 1) % currentCards.length);
     setShowAnswer(false);
-    setDifficulty("");
   };
+
+  const previousCard = () => {
+  setIndex((index - 1 + currentCards.length) % currentCards.length);
+  setShowAnswer(false);
+};
 
   return (
     <div className="bg-slate-900 text-white p-6 rounded-xl shadow-lg max-w-xl mx-auto">
@@ -41,30 +70,60 @@ export default function SmartRevisionFlashcards() {
         Review completed DSA topics and improve long-term memory.
       </p>
 
-      <div className="bg-slate-800 p-5 rounded-lg min-h-[180px]">
-        <h3 className="text-lg font-semibold mb-2">
-          {flashcards[index].topic}
-        </h3>
+      <div
+  onClick={() => setShowAnswer(!showAnswer)}
+  className="
+    bg-slate-800
+    p-5
+    rounded-lg
+    min-h-[180px]
+    cursor-pointer
+    transition-all
+    duration-500
+    hover:scale-105
+    flex
+    flex-col
+    justify-center
+    items-center
+    text-center
+  "
+>
+  <h3 className="text-lg font-bold mb-3">
+    {currentCards[index].topic}
+  </h3>
 
-        <p className="mb-4">
-          {showAnswer
-            ? flashcards[index].answer
-            : flashcards[index].question}
-        </p>
+  {!showAnswer ? (
+    <>
+      <p className="text-lg">
+        {currentCards[index].question}
+      </p>
 
-        <button
-          onClick={() => setShowAnswer(!showAnswer)}
-          className="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700"
-        >
-          {showAnswer ? "Hide Answer" : "Show Answer"}
-        </button>
-      </div>
+      <p className="mt-4 text-sm text-gray-400">
+        Click card to reveal answer
+      </p>
+    </>
+  ) : (
+    <>
+      <p className="text-green-400 text-lg font-semibold">
+        {currentCards[index].answer}
+      </p>
+
+      <p className="mt-4 text-sm text-gray-400">
+        Click card to see question
+      </p>
+    </>
+  )}
+</div>
 
       <div className="mt-5 flex gap-2">
-        {["Easy", "Medium", "Difficult"].map((level) => (
+        {["Easy", "Medium", "Hard"].map((level) => (
           <button
             key={level}
-            onClick={() => setDifficulty(level)}
+            onClick={() => {
+              setDifficulty(level);
+              setIndex(0);
+              setShowAnswer(false);
+            }}
             className="px-3 py-2 bg-slate-700 rounded hover:bg-slate-600"
           >
             {level}
@@ -72,21 +131,24 @@ export default function SmartRevisionFlashcards() {
         ))}
       </div>
 
-      {difficulty && (
-        <p className="mt-3 text-green-400">
-          Marked as {difficulty}
-        </p>
-      )}
+      <div className="mt-5 flex gap-3">
+  <button
+    onClick={previousCard}
+    className="w-1/2 px-4 py-2 bg-blue-600 rounded hover:bg-blue-700"
+  >
+    Previous
+  </button>
 
-      <button
-        onClick={nextCard}
-        className="mt-5 w-full px-4 py-2 bg-green-600 rounded hover:bg-green-700"
-      >
-        Next Flashcard
-      </button>
+  <button
+    onClick={nextCard}
+    className="w-1/2 px-4 py-2 bg-green-600 rounded hover:bg-green-700"
+  >
+    Next
+  </button>
+</div>
 
       <div className="mt-4 text-sm text-gray-400">
-        Progress: {index + 1}/{flashcards.length} cards completed
+        Progress: {index + 1}/{currentCards.length} cards completed
       </div>
     </div>
   );

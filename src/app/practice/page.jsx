@@ -14,7 +14,8 @@ import {
   ExternalLink,
   BookOpen,
   Play,
-  ScrollText
+  ScrollText,
+  History
 } from "lucide-react";
 
 import PracticeSidebar from "@/app/components/practice/PracticeSidebar";

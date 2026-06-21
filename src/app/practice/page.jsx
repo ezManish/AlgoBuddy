@@ -339,16 +339,10 @@ export default function PracticePage() {
   }, [user]);
 
   const dailyChallenge = useMemo(() => {
-  const unsolvedProblems = allProblems.filter(
-    (problem) => getStatus(problem.id) !== "Completed"
-  );
-
-  if (unsolvedProblems.length === 0) return null;
-
-  const today = new Date().getDate();
-
-  return unsolvedProblems[today % unsolvedProblems.length];
-}, [allProblems, progress]);
+    if (allProblems.length === 0) return null;
+    const daySeed = Math.floor(new Date().setHours(0,0,0,0) / 86400000);
+    return allProblems[daySeed % allProblems.length];
+  }, [allProblems]);
 
   // Seed values if not loaded
   if (!mounted) return null;

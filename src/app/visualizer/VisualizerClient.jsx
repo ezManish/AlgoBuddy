@@ -582,8 +582,8 @@ initialSections
         <div className="max-w-[1100px] mx-auto">
           
 
-          <div className="flex flex-col items-center gap-4 max-w-[680px] mx-auto mt-8 mb-10">
-            <div className="relative w-full max-w-[480px]">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-[760px] mx-auto mt-8 mb-10">
+            <div className="relative w-full sm:flex-1">
               <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#9ca3af]" />
               <input
                 type="text"
@@ -605,6 +605,13 @@ initialSections
                 </button>
               )}
             </div>
+            <Link href="/visualizer/quiz">
+              <button
+                className="h-[52px] px-6 rounded-2xl bg-[#a435f0] text-white font-semibold hover:bg-[#8e2de2] transition-all whitespace-nowrap"
+              >
+                🎯 Quiz Mode
+              </button>
+            </Link>
           </div>
 
           {search.trim() ? (

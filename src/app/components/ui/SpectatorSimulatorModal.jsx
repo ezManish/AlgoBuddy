@@ -13,6 +13,8 @@ export default function SpectatorSimulatorModal({ isOpen, onClose, matchData }) 
 
   const [p1Status, setP1Status] = useState("Idle");
   const [p2Status, setP2Status] = useState("Idle");
+  const [p1Lines, setP1Lines] = useState(0);
+  const [p2Lines, setP2Lines] = useState(0);
   
   const [p1TestOutput, setP1TestOutput] = useState("");
   const [p2TestOutput, setP2TestOutput] = useState("");
@@ -44,8 +46,10 @@ export default function SpectatorSimulatorModal({ isOpen, onClose, matchData }) 
       console.log("SPECTATOR RECEIVED TYPING STATUS", data);
       if (data.userId === p1.userId) {
         setP1Status(data.isTyping ? "Typing..." : "Idle");
+        if (data.linesCoded !== undefined) setP1Lines(data.linesCoded);
       } else if (data.userId === p2.userId) {
         setP2Status(data.isTyping ? "Typing..." : "Idle");
+        if (data.linesCoded !== undefined) setP2Lines(data.linesCoded);
       }
     });
 
@@ -139,13 +143,16 @@ export default function SpectatorSimulatorModal({ isOpen, onClose, matchData }) 
                     {p1.name} {winnerId === p1.userId && "👑 (Winner)"}
                   </span>
                 </div>
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                    p1Status === "Typing..." ? "bg-primary/20 text-primary-light animate-pulse" :
-                    p1Status === "Testing Code..." ? "bg-amber-500/20 text-amber-500 animate-pulse" :
-                    "bg-slate-500/20 text-slate-500"
-                  }`}>
-                  {p1Status}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      p1Status === "Typing..." ? "bg-primary/20 text-primary-light animate-pulse" :
+                      p1Status === "Testing Code..." ? "bg-amber-500/20 text-amber-500 animate-pulse" :
+                      "bg-slate-500/20 text-slate-500"
+                    }`}>
+                    {p1Status}
+                  </span>
+                  <span className="text-[10px] font-semibold text-slate-400">Lines: {p1Lines}</span>
+                </div>
               </div>
               <div className="flex-1 flex flex-col items-center justify-center p-8 text-center relative">
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent opacity-50" />
@@ -178,13 +185,16 @@ export default function SpectatorSimulatorModal({ isOpen, onClose, matchData }) 
                     {p2.name} {winnerId === p2.userId && "👑 (Winner)"}
                   </span>
                 </div>
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                    p2Status === "Typing..." ? "bg-purple-500/20 text-purple-400 animate-pulse" :
-                    p2Status === "Testing Code..." ? "bg-amber-500/20 text-amber-500 animate-pulse" :
-                    "bg-slate-500/20 text-slate-500"
-                  }`}>
-                  {p2Status}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      p2Status === "Typing..." ? "bg-purple-500/20 text-purple-400 animate-pulse" :
+                      p2Status === "Testing Code..." ? "bg-amber-500/20 text-amber-500 animate-pulse" :
+                      "bg-slate-500/20 text-slate-500"
+                    }`}>
+                    {p2Status}
+                  </span>
+                  <span className="text-[10px] font-semibold text-slate-400">Lines: {p2Lines}</span>
+                </div>
               </div>
               <div className="flex-1 flex flex-col items-center justify-center p-8 text-center relative">
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-500/5 via-transparent to-transparent opacity-50" />

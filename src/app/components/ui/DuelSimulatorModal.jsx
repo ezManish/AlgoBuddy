@@ -213,6 +213,8 @@ export default function DuelSimulatorModal({ isOpen, onClose, opponent, currentU
   const handleCodeChange = (value) => {
     setUserCode(value);
     if (socket && opponent?.matchId) {
+      const currentLines = value.split('\n').length;
+      
       // Clear existing timeout
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
@@ -220,7 +222,8 @@ export default function DuelSimulatorModal({ isOpen, onClose, opponent, currentU
         // If no timeout existed, we just started typing!
         socket.emit("typing_status", {
           matchId: opponent.matchId,
-          isTyping: true
+          isTyping: true,
+          linesCoded: currentLines
         });
       }
 
@@ -228,7 +231,8 @@ export default function DuelSimulatorModal({ isOpen, onClose, opponent, currentU
       typingTimeoutRef.current = setTimeout(() => {
         socket.emit("typing_status", {
           matchId: opponent.matchId,
-          isTyping: false
+          isTyping: false,
+          linesCoded: currentLines
         });
         typingTimeoutRef.current = null;
       }, 1500);

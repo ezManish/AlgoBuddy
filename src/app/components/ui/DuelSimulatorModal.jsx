@@ -16,6 +16,8 @@ export default function DuelSimulatorModal({ isOpen, onClose, opponent, currentU
   const [battleFinished, setBattleFinished] = useState(false);
   const [victoryState, setVictoryState] = useState(null); // "victory" or "defeat"
   const [isExecuting, setIsExecuting] = useState(false);
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const [language, setLanguage] = useState("javascript");
   const [socket, setSocket] = useState(null);
 
   const logContainerRef = useRef(null);
@@ -213,18 +215,16 @@ export default function DuelSimulatorModal({ isOpen, onClose, opponent, currentU
   const handleCodeChange = (value) => {
     setUserCode(value);
     if (socket && opponent?.matchId) {
-      // Clear existing timeout
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
       } else {
-        // If no timeout existed, we just started typing!
         socket.emit("typing_status", {
           matchId: opponent.matchId,
-          isTyping: true
+          isTyping: true,
+          language: language
         });
       }
 
-      // Set timeout to stop typing after 1.5s
       typingTimeoutRef.current = setTimeout(() => {
         socket.emit("typing_status", {
           matchId: opponent.matchId,
@@ -251,7 +251,7 @@ export default function DuelSimulatorModal({ isOpen, onClose, opponent, currentU
     try {
       const data = await api.request("/api/code-lab", {
         method: "POST",
-        body: { code: userCode }
+        body: { code: userCode, language }
       });
       
       let outText = `Status: ${data.message || data.status}\n`;
@@ -314,6 +314,27 @@ export default function DuelSimulatorModal({ isOpen, onClose, opponent, currentU
             </div>
 
             <div className="flex gap-2">
+              <select 
+                value={language}
+                onChange={(e) => {
+                  const newLang = e.target.value;
+                  setLanguage(newLang);
+                  if (socket && opponent?.matchId) {
+                    socket.emit("typing_status", {
+                      matchId: opponent.matchId,
+                      isTyping: true,
+                      cpm: cpm,
+                      language: newLang
+                    });
+                  }
+                }}
+                className="bg-slate-800 text-slate-300 border border-slate-700 rounded-md text-xs px-2 py-1 outline-none focus:border-primary"
+              >
+                <option value="javascript">JavaScript</option>
+                <option value="python">Python</option>
+                <option value="java">Java</option>
+                <option value="cpp">C++</option>
+              </select>
               <button
                 onClick={executeCode}
                 disabled={isExecuting || battleFinished}
@@ -359,7 +380,7 @@ export default function DuelSimulatorModal({ isOpen, onClose, opponent, currentU
             <div className="flex-1 relative">
               <Editor
                 height="100%"
-                defaultLanguage="javascript"
+                language={language}
                 theme="vs-dark"
                 value={userCode}
                 onChange={handleCodeChange}

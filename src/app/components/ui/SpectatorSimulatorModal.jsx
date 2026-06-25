@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Terminal, Eye } from "lucide-react";
 
 import { io } from "socket.io-client";
+import PlayerTestProgress from "./spectator/PlayerTestProgress";
+import PlayerLanguageBadge from "./spectator/PlayerLanguageBadge";
 
 export default function SpectatorSimulatorModal({ isOpen, onClose, matchData }) {
   const [seconds, setSeconds] = useState(0);
@@ -14,8 +16,14 @@ export default function SpectatorSimulatorModal({ isOpen, onClose, matchData }) 
   const [p1Status, setP1Status] = useState("Idle");
   const [p2Status, setP2Status] = useState("Idle");
   
-  const [p1TestOutput, setP1TestOutput] = useState("");
-  const [p2TestOutput, setP2TestOutput] = useState("");
+  const [p1Language, setP1Language] = useState("javascript");
+  const [p2Language, setP2Language] = useState("javascript");
+
+  const [p1Cpm, setP1Cpm] = useState(0);
+  const [p2Cpm, setP2Cpm] = useState(0);
+
+  const [p1TestStats, setP1TestStats] = useState({ passed: 0, total: 1, failedAttempts: 0 });
+  const [p2TestStats, setP2TestStats] = useState({ passed: 0, total: 1, failedAttempts: 0 });
 
   const [matchEnded, setMatchEnded] = useState(false);
   const [winnerId, setWinnerId] = useState(null);
@@ -44,8 +52,12 @@ export default function SpectatorSimulatorModal({ isOpen, onClose, matchData }) 
       console.log("SPECTATOR RECEIVED TYPING STATUS", data);
       if (data.userId === p1.userId) {
         setP1Status(data.isTyping ? "Typing..." : "Idle");
+        if (data.cpm !== undefined) setP1Cpm(data.cpm);
+        if (data.language) setP1Language(data.language);
       } else if (data.userId === p2.userId) {
         setP2Status(data.isTyping ? "Typing..." : "Idle");
+        if (data.cpm !== undefined) setP2Cpm(data.cpm);
+        if (data.language) setP2Language(data.language);
       }
     });
 
@@ -57,10 +69,10 @@ export default function SpectatorSimulatorModal({ isOpen, onClose, matchData }) 
     socket.on("opponent_test_result", (data) => {
       if (data.userId === p1.userId) {
         setP1Status("Idle");
-        setP1TestOutput(`Tests Passed: ${data.passed}/${data.total}`);
+        setP1TestStats({ passed: data.passed, total: data.total, failedAttempts: data.failedAttempts });
       } else if (data.userId === p2.userId) {
         setP2Status("Idle");
-        setP2TestOutput(`Tests Passed: ${data.passed}/${data.total}`);
+        setP2TestStats({ passed: data.passed, total: data.total, failedAttempts: data.failedAttempts });
       }
     });
 
@@ -154,16 +166,22 @@ export default function SpectatorSimulatorModal({ isOpen, onClose, matchData }) 
                 <h4 className="text-lg font-bold text-slate-800 dark:text-neutral-200 mb-2">
                   {p1Status === "Idle" ? "Waiting for action..." : p1Status}
                 </h4>
-                <p className="text-xs text-slate-500 max-w-xs">
+                <p className="text-xs text-slate-500 max-w-xs mb-2">
                   Raw code visibility is restricted to prevent unfair advantages. You are viewing live status updates.
                 </p>
 
-                {p1TestOutput && (
-                  <div className={`mt-6 p-3 rounded-xl border w-full max-w-sm ${p1TestOutput.includes("Passed") ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500" : "bg-red-500/10 border-red-500/20 text-red-500"}`}>
-                    <span className="text-sm font-bold block mb-1">Latest Test Result</span>
-                    <span className="text-xs">{p1TestOutput}</span>
-                  </div>
-                )}
+                {/* Live Speedometer */}
+                <PlayerSpeedometer cpm={p1Cpm} />
+
+                {/* Language Badge */}
+                <PlayerLanguageBadge language={p1Language} />
+
+                <PlayerTestProgress 
+                  passed={p1TestStats.passed} 
+                  total={p1TestStats.total} 
+                  failedAttempts={p1TestStats.failedAttempts} 
+                  status={p1Status} 
+                />
               </div>
             </div>
 
@@ -193,16 +211,22 @@ export default function SpectatorSimulatorModal({ isOpen, onClose, matchData }) 
                 <h4 className="text-lg font-bold text-slate-800 dark:text-neutral-200 mb-2">
                   {p2Status === "Idle" ? "Waiting for action..." : p2Status}
                 </h4>
-                <p className="text-xs text-slate-500 max-w-xs">
+                <p className="text-xs text-slate-500 max-w-xs mb-2">
                   Raw code visibility is restricted to prevent unfair advantages. You are viewing live status updates.
                 </p>
 
-                {p2TestOutput && (
-                  <div className={`mt-6 p-3 rounded-xl border w-full max-w-sm ${p2TestOutput.includes("Passed") ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500" : "bg-red-500/10 border-red-500/20 text-red-500"}`}>
-                    <span className="text-sm font-bold block mb-1">Latest Test Result</span>
-                    <span className="text-xs">{p2TestOutput}</span>
-                  </div>
-                )}
+                {/* Live Speedometer */}
+                <PlayerSpeedometer cpm={p2Cpm} />
+
+                {/* Language Badge */}
+                <PlayerLanguageBadge language={p2Language} />
+
+                <PlayerTestProgress 
+                  passed={p2TestStats.passed} 
+                  total={p2TestStats.total} 
+                  failedAttempts={p2TestStats.failedAttempts} 
+                  status={p2Status} 
+                />
               </div>
             </div>
           </div>

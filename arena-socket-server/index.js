@@ -561,7 +561,9 @@ io.on("connection", async (socket) => {
       console.log(`Player ${socket.data.userId} emitted typing_status to room ${data.matchId}`);
       socket.to(data.matchId).emit("opponent_typing_status", {
         isTyping: data.isTyping,
-        userId: socket.data.userId
+        userId: socket.data.userId,
+        cpm: data.cpm || 0,
+        language: data.language
       });
     } catch (error) {
       console.error(`[typing_status] Error for user ${socket.data.userId}:`, error);

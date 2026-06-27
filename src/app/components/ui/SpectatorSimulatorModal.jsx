@@ -182,9 +182,35 @@ export default function SpectatorSimulatorModal({ isOpen, onClose, matchData }) 
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
-          className="bg-white dark:bg-[#0f0f13] w-full max-w-6xl rounded-2xl shadow-2xl border border-slate-200 dark:border-neutral-800 flex flex-col overflow-hidden"
+          className="bg-white dark:bg-[#0f0f13] w-full max-w-6xl rounded-2xl shadow-2xl border border-slate-200 dark:border-neutral-800 flex flex-col overflow-hidden relative"
           style={{ height: "calc(100vh - 80px)" }}
         >
+        <AnimatePresence>
+          {matchEnded && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+            >
+              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-12 rounded-3xl shadow-2xl text-center flex flex-col items-center">
+                <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 mb-4">
+                  {winnerId === p1.userId ? p1.name : (winnerId === p2.userId ? p2.name : "IT'S A DRAW!")} 👑
+                </h2>
+                <p className="text-slate-500 dark:text-slate-400 font-medium mb-8">
+                  The match has concluded!
+                </p>
+                <button 
+                  onClick={onClose}
+                  className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors"
+                >
+                  Close Spectator
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
           {/* Header */}
           <div className="h-14 bg-slate-50 dark:bg-[#15151a] border-b border-slate-200 dark:border-neutral-800 flex items-center justify-between px-4 shrink-0">
             <div className="flex items-center gap-3">

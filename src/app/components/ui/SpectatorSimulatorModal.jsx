@@ -44,6 +44,7 @@ export default function SpectatorSimulatorModal({ isOpen, onClose, matchData }) 
   const [chatInput, setChatInput] = useState("");
   const [activeEmotes, setActiveEmotes] = useState([]);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [spectatorCount, setSpectatorCount] = useState(0);
 
   const socketRef = useRef(null);
   const chatEndRef = useRef(null);
@@ -72,7 +73,11 @@ export default function SpectatorSimulatorModal({ isOpen, onClose, matchData }) 
 
     socket.on("connect", () => {
       console.log("Spectator Socket Connected");
-      socket.emit("join_spectator", { matchId: matchData.matchId });
+      socket.emit("spectate_match", { matchId: matchData.matchId });
+    });
+
+    socket.on("spectator_count", (data) => {
+      setSpectatorCount(data.count);
     });
 
     socket.on("opponent_typing_status", (data) => {
@@ -135,6 +140,7 @@ export default function SpectatorSimulatorModal({ isOpen, onClose, matchData }) 
     });
 
     return () => {
+      socket.emit("leave_spectate_match", { matchId: matchData.matchId });
       socket.disconnect();
       socketRef.current = null;
     };
@@ -278,7 +284,15 @@ export default function SpectatorSimulatorModal({ isOpen, onClose, matchData }) 
                 <h3 className="font-bold text-slate-800 dark:text-neutral-200 text-sm leading-tight">
                   Spectator Mode: {matchData?.topic || "Match"}
                 </h3>
-                <span className="text-[10px] font-semibold text-slate-500">Live Match • {formatTime(seconds)}</span>
+                <div className="flex items-center">
+                  <span className="text-[10px] font-semibold text-slate-500">Live Match • {formatTime(seconds)}</span>
+                  {spectatorCount > 0 && (
+                    <span className="text-[10px] ml-2 flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 font-bold animate-pulse">
+                      <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
+                      {spectatorCount} viewing
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
 

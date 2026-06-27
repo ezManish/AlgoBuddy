@@ -32,6 +32,12 @@ export default function SpectatorSimulatorModal({ isOpen, onClose, matchData }) 
   const [matchEnded, setMatchEnded] = useState(false);
   const [winnerId, setWinnerId] = useState(null);
 
+  // Calculate Tug-of-War Momentum
+  const p1Score = (p1Progress || 0) + (p1Lines * 0.5);
+  const p2Score = (p2Progress || 0) + (p2Lines * 0.5);
+  const totalScore = p1Score + p2Score;
+  const tugOfWarRatio = totalScore > 0 ? (p1Score / totalScore) * 100 : 50;
+
   const [chatMessages, setChatMessages] = useState([]);
   const [chatInput, setChatInput] = useState("");
   const [activeEmotes, setActiveEmotes] = useState([]);
@@ -243,8 +249,19 @@ export default function SpectatorSimulatorModal({ isOpen, onClose, matchData }) 
         </AnimatePresence>
 
           {/* Header */}
-          <div className="h-14 bg-slate-50 dark:bg-[#15151a] border-b border-slate-200 dark:border-neutral-800 flex items-center justify-between px-4 shrink-0">
-            <div className="flex items-center gap-3">
+          <div className="h-14 bg-slate-50 dark:bg-[#15151a] border-b border-slate-200 dark:border-neutral-800 flex items-center justify-between px-4 shrink-0 relative overflow-hidden">
+            
+            {/* Tug of War Momentum Bar (Absolute positioned at the bottom of header) */}
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-purple-500 flex z-0">
+              <motion.div 
+                className="h-full bg-blue-500"
+                animate={{ width: `${tugOfWarRatio}%` }}
+                initial={false}
+                transition={{ type: "spring", bounce: 0, duration: 1 }}
+              />
+            </div>
+            
+            <div className="flex items-center gap-3 z-10">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 text-primary">
                 <Eye size={18} />
               </div>

@@ -1,3 +1,5 @@
+import crypto from "crypto";
+
 const CSRF_TOKEN_LENGTH = 32;
 const CSRF_SECRET_ENV = "CSRF_SECRET";
 
@@ -12,8 +14,7 @@ function getSecret() {
     );
   }
   if (!devSecret) {
-    const cryptoModule = require("crypto");
-    devSecret = cryptoModule.randomBytes(32).toString("hex");
+    devSecret = crypto.randomBytes(32).toString("hex");
     console.warn(
       "CSRF_SECRET not set. Using a fallback development secret. " +
       "Set CSRF_SECRET in .env.local for persistence and security in production.",
@@ -23,10 +24,9 @@ function getSecret() {
 }
 
 export function generateCsrfToken() {
-  const cryptoModule = require("crypto");
   const secret = getSecret();
-  const randomValue = cryptoModule.randomBytes(CSRF_TOKEN_LENGTH).toString("hex");
-  const hmac = cryptoModule.createHmac("sha256", secret);
+  const randomValue = crypto.randomBytes(CSRF_TOKEN_LENGTH).toString("hex");
+  const hmac = crypto.createHmac("sha256", secret);
   hmac.update(randomValue);
   const signature = hmac.digest("hex");
   return `${randomValue}.${signature}`;

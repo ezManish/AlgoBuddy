@@ -585,10 +585,10 @@ io.on("connection", async (socket) => {
       console.log(`Player ${socket.data.userId} emitted typing_status to room ${data.matchId}`);
       socket.to(data.matchId).emit("opponent_typing_status", {
         isTyping: data.isTyping,
+        userId: socket.data.userId,
         linesCoded: data.linesCoded,
-        cpm: data.cpm,
-        language: data.language,
-        userId: socket.data.userId
+        cpm: data.cpm || 0,
+        language: data.language
       });
     } catch (error) {
       console.error(`[typing_status] Error for user ${socket.data.userId}:`, error);
@@ -626,6 +626,31 @@ io.on("connection", async (socket) => {
       });
     } catch (error) {
       console.error(`[test_result] Error for user ${socket.data.userId}:`, error);
+    }
+  });
+
+  socket.on("spectate_match", async (data) => {
+    if (!data.matchId) return;
+    const room = `${data.matchId}-spectators`;
+    socket.join(room);
+    const sockets = await io.in(room).fetchSockets();
+    io.in(room).emit("spectator_count", { count: sockets.length });
+  });
+
+  socket.on("leave_spectate_match", async (data) => {
+    if (!data.matchId) return;
+    const room = `${data.matchId}-spectators`;
+    socket.leave(room);
+    const sockets = await io.in(room).fetchSockets();
+    io.in(room).emit("spectator_count", { count: sockets.length });
+  });
+
+  socket.on("disconnecting", async () => {
+    for (const room of socket.rooms) {
+      if (room.endsWith("-spectators")) {
+        const sockets = await io.in(room).fetchSockets();
+        io.in(room).emit("spectator_count", { count: Math.max(0, sockets.length - 1) });
+      }
     }
   });
 

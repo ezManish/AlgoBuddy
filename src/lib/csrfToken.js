@@ -15,8 +15,8 @@ function getSecret() {
     const cryptoModule = require("crypto");
     devSecret = cryptoModule.randomBytes(32).toString("hex");
     console.warn(
-      "CSRF_SECRET not set. Generated a random development secret. " +
-      "Tokens will be invalidated on server restart. Set CSRF_SECRET in .env.local for persistence.",
+      "CSRF_SECRET not set. Using a fallback development secret. " +
+      "Set CSRF_SECRET in .env.local for persistence and security in production.",
     );
   }
   return devSecret;
@@ -83,3 +83,5 @@ export async function validateCsrfTokenEdge(token) {
     return false;
   }
 }
+
+export const validateCsrfToken = validateCsrfTokenEdge;

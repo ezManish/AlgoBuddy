@@ -111,6 +111,13 @@ export default function QuizPage() {
       href: "/visualizer/recursion/backtracking/quiz",
       color: "bg-amber-600 hover:bg-amber-700",
     },
+    {
+      title: "Recursion Trees Quiz",
+      description:
+        "Test your understanding of Recursion Trees with multiple-choice questions.",
+      href: "/visualizer/recursion/trees/quiz",
+      color: "bg-violet-600 hover:bg-violet-700",
+    },
   ];
 
   const [searchQuery, setSearchQuery] = useState("");

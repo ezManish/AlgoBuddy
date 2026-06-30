@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { Search, X } from "lucide-react";
+import { Layers, GitBranch, Terminal, HelpCircle, ArrowRight, Search } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function QuizPage() {
   const quizzes = [
@@ -10,123 +10,127 @@ export default function QuizPage() {
       title: "Searching Quiz",
       description: "Practice Linear Search and Binary Search.",
       href: "/visualizer/array/searching/quiz",
-      color: "bg-cyan-600 hover:bg-cyan-700",
+      icon: Search,
+      themeColor: "bg-cyan-600",
+      filename: "searching_quiz.js",
     },
     {
       title: "Sorting Quiz",
       description: "Practice all sorting algorithms including Bubble, Selection, Insertion, Merge, Quick, Heap, Radix, and Counting Sort.",
       href: "/visualizer/array/sorting/quiz",
-      color: "bg-indigo-600 hover:bg-indigo-700",
+      icon: Terminal,
+      themeColor: "bg-indigo-600",
+      filename: "sorting_quiz.js",
     },
     {
-        title: "Recursion Quiz",
-        description: "Practice all recursion topics.",
-        href: "/visualizer/recursion/quiz",
-        color: "bg-violet-600 hover:bg-violet-700",
-      },
+      title: "Recursion Quiz",
+      description: "Practice all recursion topics.",
+      href: "/visualizer/recursion/quiz",
+      icon: GitBranch,
+      themeColor: "bg-violet-600",
+      filename: "recursion_quiz.js",
+    },
     {
       title: "Stack Operations Quiz",
-      description:"Test your understanding of Push & Pop, Peek, Is Empty, and Is Full operations.",
+      description: "Test your understanding of Push & Pop, Peek, Is Empty, and Is Full operations.",
       href: "/visualizer/stack/quiz",
-      color: "bg-violet-600 hover:bg-violet-700",
+      icon: Layers,
+      themeColor: "bg-fuchsia-600",
+      filename: "stack_operations_quiz.js",
     },
     {
       title: "Polish Notation Evaluation Quiz",
-      description:
-        "Test your understanding of Prefix and Postfix Expression Evaluation.",
+      description: "Test your understanding of Prefix and Postfix Expression Evaluation.",
       href: "/visualizer/stack/polish/quiz",
-      color: "bg-indigo-600 hover:bg-indigo-700",
+      icon: HelpCircle,
+      themeColor: "bg-blue-600",
+      filename: "polish_notation_quiz.js",
     },
     {
       title: "Implementation Quiz",
-      description:
-        "Practice Stack implementation using Array and Linked List.",
+      description: "Practice Stack implementation using Array and Linked List.",
       href: "/visualizer/stack/implementation/quiz",
-      color: "bg-emerald-600 hover:bg-emerald-700",
+      icon: Layers,
+      themeColor: "bg-emerald-600",
+      filename: "stack_impl_quiz.js",
     },
     {
       title: "Monotonic Stack Quiz",
       description: "Practice Largest Rectangle in Histogram.",
       href: "/visualizer/stack/monotonic/quiz",
-      color: "bg-cyan-600 hover:bg-cyan-700",
+      icon: Layers,
+      themeColor: "bg-teal-600",
+      filename: "monotonic_stack_quiz.js",
     }
   ];
 
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const filteredQuizzes = quizzes.filter((quiz) =>
-    quiz.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   return (
-    <div className="min-h-screen bg-white dark:bg-[#1c1d1f] p-8">
-      <h1 className="text-5xl font-bold text-center mb-4">
-        🎯 Quiz Mode
-      </h1>
+    <div className="min-h-screen bg-white dark:bg-[#1c1d1f] text-[var(--udemy-text)] dark:text-white transition-colors duration-300 pb-20">
+      
+      {/* Grid of Quizzes */}
+      <div className="max-w-[1100px] mx-auto px-4 pt-6">
+        <div className="mb-10">
+          <h1 className="font-mono text-4xl md:text-5xl font-bold text-surface-900 dark:text-white">
+            <span className="text-violet-500">&gt;</span>{" "}
+            Quiz Portal
+            <span className="animate-pulse text-violet-500">_</span>
+          </h1>
+        </div>
+        <div className="grid md:grid-cols-2 gap-6 items-stretch">
+          {quizzes.map((quiz, index) => {
+            const IconComponent = quiz.icon;
+            return (
+              <motion.div
+                key={quiz.title}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -6, scale: 1.015 }}
+                whileTap={{ scale: 0.985 }}
+                className="group flex flex-col h-full rounded-2xl border border-[#e5e7eb] dark:border-[#333] bg-white dark:bg-[#1a1a1a] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300"
+              >
+                {/* macOS Terminal style top bar */}
+                <div className="flex items-center gap-2 px-4 py-3 bg-surface-50 dark:bg-[#202020] border-b border-[#e5e7eb] dark:border-[#333]">
+                  <span className="w-3 h-3 rounded-full bg-[#ff5f57]" />
+                  <span className="w-3 h-3 rounded-full bg-[#febc2e]" />
+                  <span className="w-3 h-3 rounded-full bg-[#28c840]" />
+                  <span className="ml-2 text-[12px] font-mono text-surface-500 dark:text-surface-400">
+                    {quiz.filename}
+                  </span>
+                </div>
 
-      <p className="text-center text-gray-500 mb-6">
-  Choose an algorithm quiz to test your understanding.
-</p>
+                {/* Main content */}
+                <div className="p-6 flex-1 flex flex-col justify-between">
+                  <div className="flex items-start gap-4 mb-6">
+                    <div className={`w-12 h-12 rounded-xl ${quiz.themeColor} text-white flex items-center justify-center p-2.5 flex-shrink-0 shadow-md`}>
+                      <IconComponent size={24} />
+                    </div>
+                    <div>
+                      <h2 className="text-[20px] font-extrabold text-surface-900 dark:text-white group-hover:text-[var(--color-primary)] dark:group-hover:text-[var(--color-primary-light)] transition-colors">
+                        {quiz.title}
+                      </h2>
+                      <p className="text-[14px] text-surface-500 dark:text-surface-400 font-medium mt-0.5">
+                        Interactive Challenge
+                      </p>
+                    </div>
+                  </div>
 
-<div className="relative max-w-2xl mx-auto mb-10">
-  <Search
-    size={20}
-    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-  />
+                  <p className="text-[14px] text-surface-600 dark:text-surface-300 leading-relaxed mb-6">
+                    {quiz.description}
+                  </p>
 
-  <input
-    type="text"
-    placeholder="Search quizzes..."
-    value={searchQuery}
-    onChange={(e) => setSearchQuery(e.target.value)}
-    className="w-full pl-12 pr-12 py-3 border rounded-xl shadow-sm
-               focus:outline-none focus:ring-2 focus:ring-blue-500
-               dark:bg-[#2b2b2b] dark:border-gray-700"
-  />
-
-  {searchQuery && (
-    <button
-      type="button"
-      onClick={() => setSearchQuery("")}
-      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-    >
-      <X size={18} />
-    </button>
-  )}
-</div>
-
-      <div className="grid md:grid-cols-2 gap-6 max-w-7xl mx-auto">
-  {filteredQuizzes.length > 0 ? (
-    filteredQuizzes.map((quiz) => (
-      <div
-        key={quiz.title}
-        className="border rounded-2xl p-6 shadow-sm hover:shadow-lg transition"
-      >
-        <h2 className="text-3xl font-semibold mb-4">
-          📘 {quiz.title}
-        </h2>
-
-        <p className="text-gray-600 dark:text-gray-300 mb-6">
-          {quiz.description}
-        </p>
-
-        <Link href={quiz.href}>
-          <button
-            className={`text-white px-6 py-3 rounded-lg font-semibold ${quiz.color}`}
-          >
-            Start Quiz
-          </button>
-        </Link>
+                  <Link href={quiz.href} className="block mt-auto w-full">
+                    <button className="w-full h-11 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-bold text-[14px] flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all">
+                      <span>Start Quiz</span>
+                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                    </button>
+                  </Link>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
-    ))
-  ) : (
-    <div className="col-span-full text-center py-12">
-      <p className="text-xl text-gray-500 dark:text-gray-400">
-        No quizzes found.
-      </p>
-    </div>
-  )}
-</div>
     </div>
   );
 }

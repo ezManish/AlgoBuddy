@@ -77,7 +77,20 @@ export async function proxy(request) {
   );
 
   const { data: { user }, error } = await supabase.auth.getUser();
+const requestHeaders = new Headers(request.headers);
 
+if (user) {
+  requestHeaders.set("x-user-id", user.id);
+
+  if (user.email) {
+    requestHeaders.set("x-user-email", user.email);
+  }
+}
+supabaseResponse = NextResponse.next({
+  request: {
+    headers: requestHeaders,
+  },
+});
   const pathname = request.nextUrl.pathname;
   if (protectedRoutes.some((route) => pathname.startsWith(route))) {
     if (error || !user) {

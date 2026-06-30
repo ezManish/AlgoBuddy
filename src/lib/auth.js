@@ -1,4 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
+import { headers } from "next/headers";
 
 // For testing purposes, allow overriding the dependency functions
 let cookiesImpl = null;
@@ -49,6 +50,20 @@ export function getSupabaseConfig() {
 }
 
 export async function getAuthenticatedUser() {
+  const headerStore = await headers();
+
+const forwardedUserId = headerStore.get("x-user-id");
+const forwardedEmail = headerStore.get("x-user-email");
+
+if (forwardedUserId) {
+  return {
+    success: true,
+    user: {
+      id: forwardedUserId,
+      email: forwardedEmail,
+    },
+  };
+}
   const config = getSupabaseConfig();
   if (!config) {
     console.error("[Authentication Helper] Config error: Missing or invalid Supabase environment variables.");

@@ -2,7 +2,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
-import { usePathname } from "next/navigation";
+//import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useUser } from "@/features/user/UserContext";
 import { supabase } from "@/lib/supabase";
 import { Moon, Sun, Menu, X, ChevronDown, Swords, LogOut } from "lucide-react";
@@ -44,9 +45,10 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [theme, setTheme] = useState("light");
   const [themeMounted, setThemeMounted] = useState(false);
+  
 
   const pathname = usePathname();
- 
+ const router = useRouter();
   const { user, setUser } = useUser();
   const userRef = useRef(null);
 
@@ -138,7 +140,8 @@ export default function Navbar() {
       localStorage.removeItem("algobuddy_last_active_date");
       localStorage.removeItem("PROBLEM_BOOKMARKS");
     }
-    router.push("/");
+   
+   // router.push("/");
      window.location.href = "/";
     setMenuOpen(false);
   };
@@ -263,8 +266,11 @@ export default function Navbar() {
                 )}
               </div>
             ) : (
+               
               <Link
-                href="/login"
+                href="/login" 
+                 onClick={() =>  // console.log("Login 1 is working")}
+                  setMenuOpen(false) }
                 className="h-[42px] px-7 flex items-center text-[15px] font-bold text-white bg-surface-900 dark:bg-white dark:text-surface-900 rounded-full hover:bg-primary dark:hover:bg-primary dark:hover:text-white transition-all duration-150 focus-ring"
               >
                 Sign in
@@ -273,6 +279,8 @@ export default function Navbar() {
 
             <button
               onClick={toggleTheme}
+              
+              suppressHydrationWarning 
               aria-label={
                 themeMounted
                   ? `Switch to ${theme === "light"
@@ -400,8 +408,8 @@ export default function Navbar() {
             ) : (
               <Link
                 href="/login"
-                onClick={() =>
-                  setMenuOpen(false)
+                onClick={() =>  // login  kahan use ho rha h?
+                   setMenuOpen(false)
                 }
                 className="h-[44px] flex items-center justify-center text-[15px] font-semibold text-surface-900 dark:text-white border border-surface-300 dark:border-udemy-dark-border rounded-full hover:border-primary hover:text-primary transition-all focus-ring"
               >
@@ -410,9 +418,11 @@ export default function Navbar() {
             )}
           </div>
         </div>
+        
       )}
 
       <div className="h-[72px]" />
     </>
   );
 }
+

@@ -6,6 +6,7 @@ import Navbar from "@/app/components/navbar";
 
 export default function ClientLayoutWrapper({ children }) {
   const pathname = usePathname();
+  console.log("pathname =", pathname);
   const isAuthPage = pathname === "/login" || pathname === "/signup";
 
   return (

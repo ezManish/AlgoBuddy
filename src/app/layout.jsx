@@ -69,28 +69,32 @@ export default async function RootLayout({ children }) {
         <link rel="icon" href="/favicon.ico?v=3" />
 
         {/* Prevent flash: apply saved theme before React hydrates */}
-        <Script
-          id="theme-script"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var theme = localStorage.getItem('theme') || 'light';
-                  if (theme === 'dark') document.documentElement.classList.add('dark');
-                  else document.documentElement.classList.remove('dark');
-                } catch(e) {}
-              })();
-            `,
-          }}
-        />
+      
+<script
+  dangerouslySetInnerHTML={{
+    __html: `...`
+  }}
+/>
+        
         {/* Google AdSense Script */}
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5588131730389378"
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
+<Script
+  async
+  src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=..."
+  strategy="afterInteractive"
+  crossOrigin="anonymous"
+/>
+<Script id="theme-script" strategy="beforeInteractive">
+  {`
+    (function() {
+      try {
+        var theme = localStorage.getItem('theme') || 'light';
+        if (theme === 'dark') document.documentElement.classList.add('dark');
+        else document.documentElement.classList.remove('dark');
+      } catch(e) {}
+    })();
+  `}
+</Script>
+
 
         {/* Google Analytics Script */}
         {GA_ID && (
@@ -112,7 +116,7 @@ export default async function RootLayout({ children }) {
           </>
         )}
       </head>
-      <body className="bg-white text-[var(--udemy-text)] dark:bg-[var(--udemy-dark-bg)] dark:text-[var(--udemy-dark-text)]">
+     <body suppressHydrationWarning className="bg-white text-[var(--udemy-text)] dark:bg-[var(--udemy-dark-bg)] dark:text-[var(--udemy-dark-text)]">
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-[var(--color-primary)] focus:text-white focus:rounded-[var(--radius-md)]"

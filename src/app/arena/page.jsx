@@ -32,7 +32,8 @@ import {
   Users,
   Calendar,
   TrendingDown,
-  Minus
+  Minus,
+  Navigation
 } from "lucide-react";
 import { useArenaProfile } from "@/app/hooks/useArenaProfile";
 import { useSheetProgress } from "@/app/hooks/useSheetProgress";
@@ -735,15 +736,33 @@ export default function ArenaPage() {
                       ))}
                     </div>
 
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
-                      <input 
-                        type="text" 
-                        placeholder="Search players..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary"
-                      />
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+                        <input 
+                          type="text" 
+                          placeholder="Search players..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary"
+                        />
+                      </div>
+                      <button 
+                        onClick={() => {
+                          const me = displayLeaderboard?.find(u => u.name === profile?.name || u.userId === profile?.userId);
+                          if (me) {
+                            const el = document.getElementById(`leaderboard-row-${me.rank}`);
+                            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                          } else {
+                            toast.info("You are not currently ranked in this view.");
+                          }
+                        }}
+                        className="px-3 py-2 bg-primary/10 text-primary hover:bg-primary/20 rounded-lg flex items-center justify-center transition"
+                        title="Jump to My Rank"
+                      >
+                        <Navigation size={14} className="mr-1"/>
+                        <span className="text-[10px] font-bold uppercase tracking-wider">Me</span>
+                      </button>
                     </div>
 
                     <div className="space-y-2">
@@ -774,8 +793,13 @@ export default function ArenaPage() {
                           return displayLeaderboard.map((row, idx) => {
                             const rank = row.rank || idx + 1;
                             const name = row.name || (row.userId ? `User ${row.userId.substring(0,4)}` : "Unknown");
+                            const isMe = name === profile?.name || row.userId === profile?.userId;
                         return (
-                          <div key={rank} className="flex justify-between items-center p-2.5 border-b border-slate-50 dark:border-neutral-800 text-xs">
+                          <div 
+                            key={rank} 
+                            id={`leaderboard-row-${rank}`}
+                            className={`flex justify-between items-center p-2.5 border-b border-slate-50 dark:border-neutral-800 text-xs transition-colors duration-500 ${isMe ? 'bg-primary/5 dark:bg-primary/10' : ''}`}
+                          >
                             <div className="flex items-center gap-3">
                               <span className="font-semibold">{rank}.</span>
                               {/* Avatar Circle */}

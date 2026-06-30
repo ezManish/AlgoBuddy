@@ -59,6 +59,22 @@ function getInitials(name) {
   return parts[0].slice(0, 2).toUpperCase();
 }
 
+function getTierBadge(tier) {
+  const colors = {
+    "Grandmaster": "bg-red-500/20 text-red-500 border-red-500/50",
+    "Diamond": "bg-blue-500/20 text-blue-500 border-blue-500/50",
+    "Gold": "bg-amber-500/20 text-amber-500 border-amber-500/50",
+    "Silver": "bg-slate-400/20 text-slate-400 border-slate-400/50",
+    "Bronze": "bg-orange-700/20 text-orange-700 border-orange-700/50"
+  };
+  const colorClass = colors[tier] || colors["Bronze"];
+  return (
+    <span className={`px-2 py-0.5 rounded-md border text-[10px] font-bold uppercase tracking-wider ${colorClass}`}>
+      {tier}
+    </span>
+  );
+}
+
 export default function ArenaPage() {
   const { user, loading } = useUser();
   const router = useRouter();
@@ -721,7 +737,10 @@ export default function ArenaPage() {
                               </div>
                               <span className="font-semibold text-slate-850 dark:text-neutral-200">{name}</span>
                             </div>
-                            <span className="font-bold text-primary">{row.rating} Rating</span>
+                            <div className="flex items-center gap-2">
+                              {row.tier && getTierBadge(row.tier)}
+                              <span className="font-bold text-primary">{row.rating} Rating</span>
+                            </div>
                           </div>
                         );
                       })

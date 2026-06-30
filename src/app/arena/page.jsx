@@ -12,6 +12,7 @@ import SpectatorSimulatorModal from "@/app/components/ui/SpectatorSimulatorModal
 import CreateDuelModal from "@/app/components/ui/CreateDuelModal";
 import Footer from "@/app/components/footer";
 import {
+  Search,
   Home,
   Swords,
   Trophy,
@@ -95,6 +96,7 @@ export default function ArenaPage() {
 
   const [activeTab, setActiveTab] = useState("home"); // home, live, ranked, friend, leaderboard, streak, tournaments, badges, history
   const [leaderboardFilter, setLeaderboardFilter] = useState("Global");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleTabChange = (tabId) => {
     if (["ranked", "friend", "streak", "badges", "history"].includes(tabId)) {
@@ -733,14 +735,33 @@ export default function ArenaPage() {
                       ))}
                     </div>
 
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+                      <input 
+                        type="text" 
+                        placeholder="Search players..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary"
+                      />
+                    </div>
+
                     <div className="space-y-2">
                       {leaderboard && leaderboard.length > 0 ? (
                         (() => {
-                          const displayLeaderboard = leaderboardFilter === "Friends" 
+                          let displayLeaderboard = leaderboardFilter === "Friends" 
                             ? leaderboard.filter((_, i) => i % 5 === 0)
                             : leaderboardFilter === "Weekly"
                               ? [...leaderboard].slice(0, 15).sort((a,b) => b.winRate - a.winRate)
                               : leaderboard;
+                              
+                          if (searchQuery.trim()) {
+                            const query = searchQuery.toLowerCase();
+                            displayLeaderboard = displayLeaderboard.filter(row => {
+                              const name = row.name || (row.userId ? `User ${row.userId.substring(0,4)}` : "Unknown");
+                              return name.toLowerCase().includes(query);
+                            });
+                          }
                               
                           if (displayLeaderboard.length === 0) {
                             return (

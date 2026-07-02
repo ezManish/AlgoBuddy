@@ -5,6 +5,7 @@ import { Layers, GitBranch, Terminal, HelpCircle, ArrowRight, Search, Network, B
 import { motion } from "framer-motion";
 
 export default function QuizPage() {
+  
   const quizzes = [
     {
       title: "Searching Quiz",

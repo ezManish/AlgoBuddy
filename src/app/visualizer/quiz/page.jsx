@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Layers, GitBranch, Terminal, HelpCircle, ArrowRight, Search, Network, Brain, TreePine } from "lucide-react";
+import { Layers, GitBranch, Terminal, HelpCircle, ArrowRight, Search, Network, Brain, TreePine, Hash } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function QuizPage() {
@@ -241,18 +241,18 @@ export default function QuizPage() {
         "bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600",
     },
     {
-      title: "Tree Algorithms Quiz",
+      title: "HashMap Operation Quiz",
       description:
-        "Practice LCA, Diameter, Height, Tree Views, Boundary Traversal, Vertical Order, Zigzag, Morris Traversal, and Serialization.",
-      href: "/visualizer/tree/algorithms/quiz",
-      filename: "tree_algorithms_quiz.js",
-      icon: GitBranch,
-      cardBorder: "border-green-500/20 dark:border-green-500/30",
-      topBarBg: "bg-green-500/10 dark:bg-green-500/20",
+        "Practice HashMap insertion, searching, and deletion operations.",
+      href: "/visualizer/hashmap/operations/quiz",
+      filename: "hashmap_quiz.js",
+      icon: Hash,
+      cardBorder: "border-violet-500/20 dark:border-violet-500/30",
+      topBarBg: "bg-violet-500/10 dark:bg-violet-500/20",
       iconStyle:
-        "bg-green-500/10 border border-green-500/20 dark:border-green-500/30 text-green-600 dark:text-green-400",
+        "bg-violet-500/10 border border-violet-500/20 dark:border-violet-500/30 text-violet-600 dark:text-violet-400",
       btnBg:
-        "bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600",
+        "bg-violet-600 hover:bg-violet-700 dark:bg-violet-500 dark:hover:bg-violet-600",
     },
     {
       title: "Dynamic Programming Quiz",

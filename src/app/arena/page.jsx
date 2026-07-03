@@ -1022,7 +1022,7 @@ export default function ArenaPage() {
                           return (
                             <div 
                               key={i} 
-                              className={`aspect-square rounded-lg transition-all duration-300 ${isActive ? "bg-amber-400 dark:bg-amber-500 shadow-[0_0_8px_rgba(251,191,36,0.3)]" : "bg-slate-200 dark:bg-neutral-800"} hover:scale-110 cursor-pointer`}
+                              className={`aspect-square rounded-lg transition-all duration-300 ${isActive ? "bg-primary dark:bg-primary-light shadow-[0_0_8px_rgba(164,53,240,0.35)]" : "bg-slate-200 dark:bg-neutral-800"} hover:scale-110 cursor-pointer`}
                               title={`${dateStr}: ${isActive ? "Active 🔥" : "Inactive"}`}
                             />
                           );

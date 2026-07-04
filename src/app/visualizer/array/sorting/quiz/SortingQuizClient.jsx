@@ -37,10 +37,10 @@ export default function SortingQuizClient() {
       description: "Test your knowledge of pivot selections, partitioning strategies, and recursion trees.",
     },
     {
-      title: "Bucket Sort Quiz",
+      title: "Shell Sort Quiz",
       description:
-        "Practice Bucket Sort, bucket distribution, complexity, stability, and applications.",
-      href: "/visualizer/array/sorting/quiz/bucket-sort",
+        "Practice Shell Sort algorithm, gap sequences, complexity, and applications.",
+      href: "/visualizer/sorting/quiz/shell-sort",
     },
     {
       title: "Heap Sort Quiz",

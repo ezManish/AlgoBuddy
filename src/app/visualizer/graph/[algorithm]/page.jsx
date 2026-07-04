@@ -8,6 +8,7 @@ export async function generateStaticParams() {
     { algorithm: "bfs" },
     { algorithm: "dfs" },
     { algorithm: "dijkstra" },
+    { algorithm: "a-star" },
     { algorithm: "bellman-ford" },
     { algorithm: "floyd-warshall" },
     { algorithm: "prim" },
@@ -15,6 +16,7 @@ export async function generateStaticParams() {
     { algorithm: "topological-sort" },
     { algorithm: "kosaraju" },
     { algorithm: "tarjan" },
+    { algorithm: "ford-fulkerson" },
     { algorithm: "adjacency-list" },
     { algorithm: "adjacency-matrix" },
   ];

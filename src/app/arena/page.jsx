@@ -667,15 +667,17 @@ export default function ArenaPage() {
                         ))}
                       </div>
 
-                      <div className="w-full max-w-sm mb-6">
-                        <div className="flex justify-between text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-2">
-                          <span>Placement Progress</span>
-                          <span>0 / 5</span>
+                      {!isPlaced && (
+                        <div className="w-full max-w-sm mb-6">
+                          <div className="flex justify-between text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-2">
+                            <span>Placement Progress</span>
+                            <span>{placementMatches} / 5</span>
+                          </div>
+                          <div className="w-full h-2 bg-slate-200 dark:bg-neutral-800 rounded-full overflow-hidden">
+                            <div className="h-full bg-primary rounded-full transition-all duration-1000" style={{ width: `${placementPercentage}%` }}></div>
+                          </div>
                         </div>
-                        <div className="w-full h-2 bg-slate-200 dark:bg-neutral-800 rounded-full overflow-hidden">
-                          <div className="h-full w-0 bg-primary rounded-full transition-all duration-1000"></div>
-                        </div>
-                      </div>
+                      )}
 
                       <button
                         onClick={() => openMatchmakingModal({ isRanked: true })}

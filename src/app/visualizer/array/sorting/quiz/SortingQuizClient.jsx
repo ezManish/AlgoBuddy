@@ -43,6 +43,12 @@ export default function SortingQuizClient() {
       href: "/visualizer/array/sorting/quiz/bucket-sort",
     },
     {
+      title: "Tim Sort Quiz",
+      description:
+        "Practice Tim Sort, runs, hybrid sorting, complexity, stability, and applications.",
+      href: "/visualizer/array/sorting/quiz/timsort",
+    },
+    {
       title: "Heap Sort Quiz",
       href: "/visualizer/array/sorting/quiz/heapsort",
       filename: "heap_sort_quiz.js",

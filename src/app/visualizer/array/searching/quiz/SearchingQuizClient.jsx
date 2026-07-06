@@ -20,6 +20,13 @@ export default function SearchingQuizClient() {
       filename: "binary_search_quiz.js",
       themeColor: "from-blue-500 to-indigo-600",
     },
+    {
+      title: "Ternary Search Quiz",
+      description: "Practice Ternary Search concepts, divide-and-conquer strategy, search intervals, and time complexities.",
+      href: "/visualizer/array/ternary-search/quiz",
+      filename: "ternary_search_quiz.js",
+      themeColor: "from-violet-500 to-purple-600",
+    },
   ];
 
   return (

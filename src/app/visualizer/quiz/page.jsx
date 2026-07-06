@@ -9,7 +9,7 @@ export default function QuizPage() {
   const quizzes = [
     {
       title: "Searching Quiz",
-      description: "Practice Linear Search and Binary Search.",
+      description: "Practice all searching algorithms including liner search, binary search, ternary search, etc.",
       href: "/visualizer/array/searching/quiz",
       icon: Search,
       filename: "searching_quiz.js",

@@ -692,13 +692,23 @@ export default function PracticePage() {
                     {/* Search */}
                     <div className="relative flex-1 w-full">
                       <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-neutral-600" />
-                      <input
+                     <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => {
                           setSearchQuery(e.target.value);
                           setCurrentPage(1);
                         }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Escape") {
+                            setSearchQuery("");
+                            setCurrentPage(1);
+                            e.currentTarget.blur();
+                          }
+                        }}
+                        autoComplete="off"
+                        spellCheck={false}
+                        aria-label="Search problems"
                         placeholder="Search problems... (Press /)"
                         className="w-full h-11 pl-11 pr-4 rounded-xl border border-slate-200 dark:border-neutral-800 bg-white dark:bg-[#1a1b1e] text-xs font-bold text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-neutral-600 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition shadow-sm"
                       />

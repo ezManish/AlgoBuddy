@@ -747,7 +747,6 @@ export default function PracticePage() {
                           <th className="py-4 px-5 text-center">Company</th>
                           <th className="py-4 px-5 text-center">Status</th>
                           <th className="py-4 px-5 text-center w-12"></th>
-                          <th className="py-4 px-5 text-center w-12" title="Add to My Sheet">Sheet</th>
                         </tr>
                       </thead>
                       <tbody>

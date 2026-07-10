@@ -102,43 +102,44 @@ export async function POST(request) {
 
     const cookieStore = await cookies();
     const supabase = getSupabaseServerClient(cookieStore);
-    const { error } = await supabase.from("user_progress").upsert(
-      {
-        user_id: authResult.user.id,
-        problem_id: problemId,
-        status: status,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: ["user_id", "problem_id"] }
-    );
-
-    if (error) return jsonResponse({ error: error.message }, 500);
-
-    // Atomic streak update via Supabase RPC (fixes TOCTOU race condition)
     let currentStreak = 0;
     let longestStreak = 0;
+
     if (status === "Completed") {
       let verifiedLocalDate = typeof localDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(localDate)
         ? localDate
         : new Date().toISOString().split("T")[0];
 
-      const { data, error } = await supabase.rpc('increment_streak_on_completion', {
+      const { data, error } = await supabase.rpc('upsert_progress_and_update_streak', {
         p_user_id: authResult.user.id,
+        p_problem_id: problemId,
+        p_status: status,
+        p_updated_at: new Date().toISOString(),
         p_local_date: verifiedLocalDate
       });
       if (error) return jsonResponse({ error: error.message }, 500);
       currentStreak = data?.[0]?.current_streak ?? 0;
       longestStreak = data?.[0]?.longest_streak ?? 0;
     } else {
-      // Fetch existing streak values from database so they are not reset to 0 in the client
-      const { data, error } = await supabase
+      const { data, error } = await supabase.from("user_progress").upsert(
+        {
+          user_id: authResult.user.id,
+          problem_id: problemId,
+          status: status,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: ["user_id", "problem_id"] }
+      );
+      if (error) return jsonResponse({ error: error.message }, 500);
+
+      const { data: streakData, error: streakError } = await supabase
         .from("user_practice_stats")
         .select("current_streak, longest_streak")
         .eq("user_id", authResult.user.id)
         .maybeSingle();
-      if (!error && data) {
-        currentStreak = data.current_streak ?? 0;
-        longestStreak = data.longest_streak ?? 0;
+      if (!streakError && streakData) {
+        currentStreak = streakData.current_streak ?? 0;
+        longestStreak = streakData.longest_streak ?? 0;
       }
     }
 

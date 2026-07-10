@@ -9,15 +9,7 @@ import {
 import { validateCsrfTokenEdge } from "@/lib/csrfToken";
 import { jsonResponse, errorResponse, getSupabaseAdmin } from "@/lib/serverApi";
 import { RATE_LIMITS } from "@/config/rateLimits";
-
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
+import { escapeHtml } from "@/lib/shared-utils";
 
 function isValidEmail(value) {
   const email = String(value).trim();

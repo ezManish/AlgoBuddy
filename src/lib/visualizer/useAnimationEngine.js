@@ -14,12 +14,9 @@ export function useAnimationEngine({ steps, onStep, initialSpeed = DEFAULT_SPEED
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeedState] = useState(initialSpeed);
 
-  let narration = null;
-  try {
-    narration = useNarration();
-  } catch (e) {
-    // Ignore if not wrapped in provider
-  }
+  // Hook must be called at the top level unconditionally
+  const narration = useNarration();
+  
   const speakRef = useRef(narration?.speak);
   useEffect(() => {
     speakRef.current = narration?.speak;

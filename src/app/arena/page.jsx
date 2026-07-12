@@ -1396,7 +1396,7 @@ export default function ArenaPage() {
                     </div>
 
                     {/* Filter Tabs */}
-                    <div className="flex items-center gap-2 border-b border-slate-200 dark:border-neutral-800 pb-px">
+                    <div className="flex items-center gap-2 border-b border-slate-200 dark:border-neutral-800 pb-px overflow-x-auto no-scrollbar">
                       {["Live", "Upcoming", "Past"].map((filter) => (
                         <button
                           key={filter}
@@ -1545,7 +1545,7 @@ export default function ArenaPage() {
                     </div>
 
                     {/* Badge Category Filters */}
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2">
                       {["All", "Combat", "Learning", "Tournaments"].map((category) => (
                         <button
                           key={category}

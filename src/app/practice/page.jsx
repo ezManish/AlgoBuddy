@@ -777,6 +777,7 @@ export default function PracticePage() {
                             return (
                               <tr
                                 key={prob.id}
+                                onClick={() => window.open(prob.practiceUrl, "_blank", "noopener,noreferrer")}
                                 className="border-b border-slate-50 dark:border-neutral-800/80 hover:bg-slate-50/20 dark:hover:bg-neutral-800/10 transition last:border-0"
                               >
                                 <td className="py-4 px-5 text-center font-bold text-xs text-slate-400">
@@ -814,7 +815,8 @@ export default function PracticePage() {
                                 </td>
                                 <td className="py-4 px-5 text-center">
                                   <button
-                                    onClick={() => {
+                                    onClick={(e) => {
+                                      e.stopPropagation();
                                       if (!ensureLoggedIn()) return;
                                       toggleBookmark(prob.id, prob.topic.toLowerCase());
                                     }}
@@ -1225,7 +1227,8 @@ export default function PracticePage() {
                               const status = getStatus(prob.id);
                               const isSaved = isBookmarked(prob.id);
                               return (
-                                <tr key={prob.id} className="border-b border-slate-50 dark:border-neutral-800/80 hover:bg-slate-50/20 dark:hover:bg-neutral-800/10 transition last:border-0">
+                                <tr key={prob.id} 
+                                onClick={() => window.open(prob.practiceUrl, "_blank", "noopener,noreferrer")}className="border-b border-slate-50 dark:border-neutral-800/80 hover:bg-slate-50/20 dark:hover:bg-neutral-800/10 transition last:border-0">
                                   <td className="py-4 px-5 text-center font-bold text-xs text-slate-400">{idx + 1}</td>
                                   <td className="py-4 px-5">
                                     <a
@@ -1251,7 +1254,10 @@ export default function PracticePage() {
                                   <td className="py-4 px-5 text-center">
                                     <div className="relative flex justify-center group">
                                       <button
-                                        onClick={() => handleStatusToggle(prob.id, status)}
+                                        onClick={(e) =>{
+                                          s.stopPropagation();
+                                          handleStatusToggle(prob.id, status)
+                                        } }
                                         className="focus:outline-none"
                                         title={"Click once → Mark as Attempted 🟠\nDouble click → Mark as Completed 🟢"}
                                         aria-label={"Status action: click once to mark as attempted, double click to mark as completed"}
@@ -1272,7 +1278,8 @@ export default function PracticePage() {
                                   </td>
                                   <td className="py-4 px-5 text-center">
                                     <button
-                                      onClick={() => {
+                                      onClick={(e) => {
+                                        e.stopPropagation();
                                         if (!ensureLoggedIn()) return;
                                         toggleBookmark(prob.id, selectedTopicWise.toLowerCase());
                                       }}

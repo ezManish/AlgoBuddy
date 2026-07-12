@@ -33,6 +33,10 @@ export const sections = [
           { name: "Linear Search", path: "/visualizer/array/linearsearch" },
           { name: "Binary Search", path: "/visualizer/array/binarysearch" },
           { name: "Ternary Search", path: "/visualizer/array/ternary-search" },
+          { name: "Jump Search", path: "/visualizer/array/jump-search" },
+          { name: "Fibonacci Search", path: "/visualizer/array/fibonacci-search" },
+          { name: "Exponential Search", path: "/visualizer/array/exponential-search" },
+          { name: "Interpolation Search", path: "/visualizer/array/interpolation-search"},
         ],
       },
       {
@@ -61,6 +65,26 @@ export const sections = [
       },
     ],
   },
+  {
+    title: "String",
+    slug: "string",
+    desc: "Pattern matching, string manipulation, and interview-based string algorithms",
+    subsections: [
+      {
+        title: "Basic Operations",
+        items: [
+          {
+            name: "Reverse String",
+            path: "/visualizer/string/reverse-string",
+          },
+          {
+            name: "Palindrome Check",
+            path: "/visualizer/string/palindrome-check",
+          },
+        ],
+      },
+    ],
+  },  
   {
     title: "Recursion",
     slug: "recursion",

@@ -99,6 +99,28 @@ const defaultGraphs = {
       { from: "4", to: "5", weight: 6, directed: true },
     ]
   },
+  "a-star": {
+    nodes: [
+      { id: "0", x: 100, y: 250, label: "A" },
+      { id: "1", x: 300, y: 100, label: "B" },
+      { id: "2", x: 300, y: 400, label: "C" },
+      { id: "3", x: 500, y: 100, label: "D" },
+      { id: "4", x: 500, y: 400, label: "E" },
+      { id: "5", x: 700, y: 250, label: "F" },
+    ],
+    edges: [
+      { from: "0", to: "1", weight: 4, directed: true },
+      { from: "0", to: "2", weight: 2, directed: true },
+      { from: "1", to: "3", weight: 5, directed: true },
+      { from: "1", to: "2", weight: 1, directed: true },
+      { from: "2", to: "1", weight: 8, directed: true },
+      { from: "2", to: "3", weight: 10, directed: true },
+      { from: "2", to: "4", weight: 3, directed: true },
+      { from: "3", to: "5", weight: 2, directed: true },
+      { from: "4", to: "3", weight: 4, directed: true },
+      { from: "4", to: "5", weight: 6, directed: true },
+    ]
+  },
   "floyd-warshall": {
     nodes: [
       { id: "0", x: 120, y: 160, label: "A" },
@@ -391,9 +413,12 @@ export default function GraphVisualizer({ algorithm = "bfs", startNode: initialS
     });
 
     const startNodeId = initialStartNode || (nodes.length > 0 ? nodes[0].id : null);
+    const finalGoalNodeId = targetNode || (nodes.length > 1 ? nodes[nodes.length - 1].id : null);
+    
     if (algorithm === "bfs") return Array.from(bfsGenerator(adj, startNodeId));
     if (algorithm === "dfs") return Array.from(dfsGenerator(adj, startNodeId));
     if (algorithm === "dijkstra") return Array.from(dijkstraGenerator(adj, startNodeId, targetNode || null));
+    if (algorithm === "a-star") return Array.from(aStarGenerator(nodes, edges, startNodeId, finalGoalNodeId));
     if (algorithm === "bellman-ford") return Array.from(bellmanFordGenerator(nodes, edges, startNodeId));
     if (algorithm === "floyd-warshall") return Array.from(floydWarshallGenerator(nodes, edges));
     if (algorithm === "prim") return Array.from(primGenerator(adj, startNodeId));
@@ -580,7 +605,7 @@ export default function GraphVisualizer({ algorithm = "bfs", startNode: initialS
               {isEditing ? "Editing Mode" : "Visualization Mode"}
             </button>
 
-            {algorithm === "dijkstra" && (
+            {["dijkstra", "a-star", "ford-fulkerson"].includes(algorithm) && (
               <div className="flex items-center gap-2 ml-2">
                 <label className="text-sm font-medium text-surface-600 dark:text-surface-300">Target Node:</label>
                 <select
@@ -591,7 +616,7 @@ export default function GraphVisualizer({ algorithm = "bfs", startNode: initialS
                   }}
                   className="bg-surface-50 border border-surface-200 dark:bg-surface-800 dark:border-surface-600 rounded px-2 py-1 text-sm text-surface-900 dark:text-white"
                 >
-                  <option value="">None (Traverse all)</option>
+                  {algorithm !== "a-star" && <option value="">None (Traverse all)</option>}
                   {nodes.map(n => (
                     <option key={n.id} value={n.id}>{n.label || n.id}</option>
                   ))}
@@ -612,6 +637,8 @@ export default function GraphVisualizer({ algorithm = "bfs", startNode: initialS
                 Directed
               </span>
             )}
+
+
 
             {!isEditing && (
               <div className="flex flex-wrap items-center gap-2">

@@ -112,6 +112,7 @@ export default function ArenaPage() {
     days: 0, hours: 0, minutes: 0, seconds: 0
   });
   const [tournamentFilter, setTournamentFilter] = useState("Upcoming");
+  const [badgeCategory, setBadgeCategory] = useState("All");
 
   const calculateRank = (xp) => {
     if (xp >= 10000) return { name: "Grandmaster", Icon: Crown, color: "text-purple-500", ringColor: "border-purple-500" };
@@ -1541,6 +1542,23 @@ export default function ArenaPage() {
                           <span className="text-lg font-bold text-orange-300">/ 50</span>
                         </div>
                       </div>
+                    </div>
+
+                    {/* Badge Category Filters */}
+                    <div className="flex flex-wrap items-center gap-2">
+                      {["All", "Combat", "Learning", "Tournaments"].map((category) => (
+                        <button
+                          key={category}
+                          onClick={() => setBadgeCategory(category)}
+                          className={`px-4 py-2 rounded-full text-xs font-bold transition-colors ${
+                            badgeCategory === category
+                              ? "bg-slate-800 text-white dark:bg-white dark:text-slate-900 shadow-md"
+                              : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 border border-slate-200 dark:border-neutral-700"
+                          }`}
+                        >
+                          {category}
+                        </button>
+                      ))}
                     </div>
 
                     {/* Badges Grid */}

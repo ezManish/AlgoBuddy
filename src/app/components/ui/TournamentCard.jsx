@@ -1,7 +1,22 @@
 "use client";
-import { Users, Clock, Trophy, Calendar } from "lucide-react";
+import { useState } from "react";
+import { Users, Clock, Trophy, Calendar, Check, Loader2 } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 export default function TournamentCard({ tournament }) {
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
+
+  const handleRegister = () => {
+    setIsRegistering(true);
+    // Simulate API call
+    setTimeout(() => {
+      setIsRegistering(false);
+      setIsRegistered(true);
+      toast.success(`Successfully registered for ${tournament.title}!`);
+    }, 1500);
+  };
+
   return (
     <div className="bg-white dark:bg-neutral-800 border border-slate-100 dark:border-neutral-800/80 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group flex flex-col md:flex-row gap-5 items-start md:items-center">
       <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none transition-colors ${tournament.color || 'bg-primary/5 group-hover:bg-primary/10'}`}></div>
@@ -28,7 +43,29 @@ export default function TournamentCard({ tournament }) {
 
       <div className="flex flex-col items-center justify-center bg-slate-50 dark:bg-neutral-900/50 rounded-xl p-4 min-w-[120px] border border-slate-100 dark:border-neutral-800">
         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Prize Pool</span>
-        <span className="text-lg font-black text-amber-500">{tournament.prize}</span>
+        <span className="text-lg font-black text-amber-500 mb-3">{tournament.prize}</span>
+        
+        {tournament.status === "upcoming" && (
+          <button
+            onClick={handleRegister}
+            disabled={isRegistered || isRegistering}
+            className={`w-full py-2 px-4 rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition-all ${
+              isRegistered
+                ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
+                : "bg-primary text-white hover:bg-primary/90 shadow-md hover:shadow-lg"
+            }`}
+          >
+            {isRegistering ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : isRegistered ? (
+              <>
+                <Check size={14} /> Registered
+              </>
+            ) : (
+              "Register Now"
+            )}
+          </button>
+        )}
       </div>
     </div>
   );

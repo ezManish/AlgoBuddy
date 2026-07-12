@@ -1476,14 +1476,35 @@ export default function ArenaPage() {
                         }} />
                       </div>
                     ) : (
-                      <div className="py-8 text-center bg-slate-50 dark:bg-neutral-900/50 rounded-2xl border border-dashed border-slate-200 dark:border-neutral-800">
-                        <Trophy size={48} className="mx-auto text-slate-300 dark:text-neutral-600 mb-4" />
-                        <h3 className="text-lg font-bold text-slate-800 dark:text-neutral-200">
-                          Past Results
-                        </h3>
-                        <p className="text-sm text-slate-500 dark:text-neutral-400 mt-2">
-                          Historical tournament results will appear here.
-                        </p>
+                      <div className="space-y-4">
+                        {[
+                          { title: "Graph Theory Masterclass", date: "Last Sunday", winner: "Alex Chen", score: "400/400", time: "38:15", yourRank: 12 },
+                          { title: "Beginner's Array Challenge", date: "2 weeks ago", winner: "Sarah J.", score: "400/400", time: "42:01", yourRank: 5 },
+                        ].map((past, idx) => (
+                          <div key={idx} className="bg-white dark:bg-neutral-800 border border-slate-100 dark:border-neutral-800/80 rounded-2xl p-5 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 opacity-75 hover:opacity-100 transition-opacity">
+                            <div className="flex-1">
+                              <h4 className="font-bold text-slate-800 dark:text-neutral-100 mb-1">{past.title}</h4>
+                              <span className="text-xs text-slate-500 dark:text-neutral-400">{past.date}</span>
+                            </div>
+                            <div className="flex items-center gap-8 text-sm">
+                              <div>
+                                <span className="block text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-0.5">Winner</span>
+                                <span className="font-bold text-slate-700 dark:text-neutral-200 flex items-center gap-1.5"><Crown size={14} className="text-amber-500" /> {past.winner}</span>
+                              </div>
+                              <div>
+                                <span className="block text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-0.5">Top Score</span>
+                                <span className="font-bold text-slate-700 dark:text-neutral-200">{past.score}</span>
+                              </div>
+                              <div className="text-right">
+                                <span className="block text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-0.5">Your Rank</span>
+                                <span className="font-bold text-primary">#{past.yourRank}</span>
+                              </div>
+                            </div>
+                            <button className="px-4 py-2 rounded-lg border border-slate-200 dark:border-neutral-700 text-xs font-bold text-slate-600 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700/50 transition-colors">
+                              View Full Results
+                            </button>
+                          </div>
+                        ))}
                       </div>
                     )}
                   </div>

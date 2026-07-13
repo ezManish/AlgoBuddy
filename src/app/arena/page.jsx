@@ -1203,121 +1203,23 @@ export default function ArenaPage() {
 
                     {/* Stats Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="group bg-white dark:bg-neutral-800 border border-slate-100 dark:border-neutral-800/80 rounded-2xl p-5 flex items-center gap-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-amber-500/30 animate-in zoom-in-95 duration-500 delay-200 fill-mode-both relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl -mr-8 -mt-8 pointer-events-none group-hover:bg-amber-500/10 transition-colors duration-500"></div>
-                        <div className="w-14 h-14 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500 shrink-0">
-                          <Flame size={28} className="animate-pulse" />
-                        </div>
-                        <div>
-                          <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Current Streak</div>
-                          <div className="text-2xl font-black text-slate-800 dark:text-neutral-200">{streakData?.current || 0}</div>
-                        </div>
+                      <div className="bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-2xl p-5 text-center relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <Flame size={32} className="mx-auto mb-2 text-amber-500 animate-pulse group-hover:scale-110 transition-transform" />
+                        <div className="text-2xl font-black text-slate-800 dark:text-neutral-200 relative z-10">{streakData?.current || 0}</div>
+                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wide relative z-10">Current Streak</div>
                       </div>
-                      <div className="group bg-white dark:bg-neutral-800 border border-slate-100 dark:border-neutral-800/80 rounded-2xl p-5 flex items-center gap-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary/30 animate-in zoom-in-95 duration-500 delay-300 fill-mode-both relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl -mr-8 -mt-8 pointer-events-none group-hover:bg-primary/10 transition-colors duration-500"></div>
-                        <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                          <Trophy size={28} />
-                        </div>
-                        <div>
-                          <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Longest Streak</div>
-                          <div className="text-2xl font-black text-slate-800 dark:text-neutral-200">{streakData?.longest || 0}</div>
-                        </div>
+                      <div className="bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-2xl p-5 text-center relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <Trophy size={32} className="mx-auto mb-2 text-primary group-hover:scale-110 transition-transform" />
+                        <div className="text-2xl font-black text-slate-800 dark:text-neutral-200 relative z-10">{streakData?.longest || streakData?.best || 0}</div>
+                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wide relative z-10">Longest Streak</div>
                       </div>
-                      <div className="group bg-white dark:bg-neutral-800 border border-slate-100 dark:border-neutral-800/80 rounded-2xl p-5 flex items-center gap-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-indigo-500/30 animate-in zoom-in-95 duration-500 delay-400 fill-mode-both relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl -mr-8 -mt-8 pointer-events-none group-hover:bg-indigo-500/10 transition-colors duration-500"></div>
-                        <div className="w-14 h-14 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-500 shrink-0">
-                          <Calendar size={28} />
-                        </div>
-                        <div>
-                          <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Total Days Active</div>
-                          <div className="text-2xl font-black text-slate-800 dark:text-neutral-200">14</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Heatmap */}
-                    <div className="bg-white dark:bg-neutral-800 border border-slate-100 dark:border-neutral-800/80 rounded-2xl p-6 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500 delay-500 fill-mode-both relative">
-                      <div className="flex items-center justify-between mb-6">
-                        <h5 className="text-sm font-bold text-slate-800 dark:text-neutral-200">Activity Heatmap</h5>
-                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-slate-100 dark:bg-neutral-900 px-2 py-1 rounded-md">Last 30 Days</span>
-                      </div>
-                      
-                      <div className="flex flex-col gap-1 overflow-x-auto pb-2">
-                        {/* Heatmap Grid */}
-                        <div className="flex gap-2 min-w-max">
-                          {/* Day Labels */}
-                          <div className="flex flex-col gap-2 pt-6 text-[10px] font-semibold text-slate-400 mr-2 justify-between">
-                            <span className="h-5 flex items-center">Mon</span>
-                            <span className="h-5 flex items-center">Wed</span>
-                            <span className="h-5 flex items-center">Fri</span>
-                          </div>
-                          {Array.from({ length: 6 }).map((_, weekIdx) => {
-                            // 6 columns (weeks), each 5 days (mon-fri approx) or 7 days.
-                            // The original design had 30 days flat. Let's make it a realistic 7x5 or 5x6 grid.
-                            // Let's use 5 weeks x 7 days = 35 days for a better layout.
-                            return (
-                              <div key={weekIdx} className="flex flex-col gap-2">
-                                {/* Week/Month Label roughly */}
-                                {weekIdx % 2 === 0 ? (
-                                  <div className="text-[10px] font-semibold text-slate-400 h-4 text-center">
-                                    {new Date(Date.now() - (5 - weekIdx) * 7 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'short' })}
-                                  </div>
-                                ) : (
-                                  <div className="h-4"></div>
-                                )}
-                                {Array.from({ length: 7 }).map((_, dayIdx) => {
-                                  const totalDays = 35;
-                                  const daysAgo = totalDays - 1 - (weekIdx * 7 + dayIdx);
-                                  
-                                  // Don't render future days if daysAgo < 0
-                                  if (daysAgo < 0 || daysAgo >= 30) return <div key={dayIdx} className="w-5 h-5 opacity-0"></div>;
-
-                                  const current = streakData?.current || 0;
-                                  let isActive = daysAgo < current;
-                                  if (!isActive) {
-                                    isActive = (daysAgo * 7) % 11 < 4 && daysAgo < 25; 
-                                  }
-                                  
-                                  const d = new Date();
-                                  d.setDate(d.getDate() - daysAgo);
-                                  const dateStr = d.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
-                                  
-                                  // Intensity based on 'activity'
-                                  const intensityClass = isActive? ((daysAgo % 3 === 0)  
-                                  ? "bg-primary dark:bg-primary-light shadow-[0_0_8px_rgba(164,53,240,0.35)]"   
-                                  : "bg-primary/70 dark:bg-primary-light/70 shadow-[0_0_8px_rgba(164,53,240,0.25)]")
-                                  : "bg-slate-100 dark:bg-neutral-700/50";
-
-                                  return (
-                                    <div 
-                                      key={dayIdx} 
-                                      className={`w-5 h-5 rounded-[4px] transition-all duration-300 ${intensityClass} hover:scale-125 hover:ring-2 hover:ring-primary/50 cursor-pointer relative group`}
-                                    >
-                                      {/* Tooltip */}
-                                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2.5 py-1.5 bg-slate-800 text-white text-[10px] font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl flex flex-col items-center">
-                                        <span>{isActive ? "Active Day 🔥" : "No Activity"}</span>
-                                        <span className="text-slate-400 font-medium">{dateStr}</span>
-                                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
-                                      </div>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-
-                      {/* Legend */}
-                      <div className="flex items-center gap-2 mt-6 justify-end text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                        <span>Less</span>
-                        <div className="flex gap-1">
-                          <div className="w-3 h-3 rounded-[3px] bg-slate-100 dark:bg-neutral-700/50"></div>
-                          <div className="w-3 h-3 rounded-[3px] bg-primary/40"></div>
-                          <div className="w-3 h-3 rounded-[3px] bg-primary/70"></div>
-                          <div className="w-3 h-3 rounded-[3px] bg-primary dark:bg-primary-light"></div>
-                        </div>
-                        <span>More</span>
+                      <div className="bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-2xl p-5 text-center relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <Calendar size={32} className="mx-auto mb-2 text-indigo-500 group-hover:scale-110 transition-transform" />
+                        <div className="text-2xl font-black text-slate-800 dark:text-neutral-200 relative z-10">{(streakData?.longest || streakData?.best || 0) + (streakData?.current || 0)}</div>
+                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wide relative z-10">Total Days Active</div>
                       </div>
                     </div>
 

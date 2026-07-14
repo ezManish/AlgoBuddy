@@ -27,6 +27,13 @@ export default function StringQuizClient() {
       href: "/visualizer/string/character-frequency/quiz",
       filename: "character_frequency_quiz.js",
     },
+    {
+      title: "Longest Common Prefix Quiz",
+      description:
+        "Practice Longest Common Prefix concepts, prefix matching, and string comparison.",
+      href: "/visualizer/string/longest-common-prefix/quiz",
+      filename: "longest_common_prefix_quiz.js",
+    },
    
   ];
 

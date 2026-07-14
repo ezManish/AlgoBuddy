@@ -13,6 +13,13 @@ export default function StringQuizClient() {
       href: "/visualizer/string/reverse-string/quiz",
       filename: "reverse_string_quiz.js",
     },
+    {
+      title: "Palindrome Check Quiz",
+      description:
+        "Practice Palindrome Check concepts, two-pointer technique, string comparison, and edge cases.",
+      href: "/visualizer/string/palindrome-check/quiz",
+      filename: "palindrome_check_quiz.js",
+    },
    
   ];
 

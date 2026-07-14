@@ -13,6 +13,34 @@ export default function StringQuizClient() {
       href: "/visualizer/string/reverse-string/quiz",
       filename: "reverse_string_quiz.js",
     },
+    {
+      title: "Palindrome Check Quiz",
+      description:
+        "Practice Palindrome Check concepts, two-pointer technique, string comparison, and edge cases.",
+      href: "/visualizer/string/palindrome-check/quiz",
+      filename: "palindrome_check_quiz.js",
+    },
+    {
+      title: "Character Frequency Quiz",
+      description:
+        "Practice Character Frequency using maps, hashing, and frequency counting.",
+      href: "/visualizer/string/character-frequency/quiz",
+      filename: "character_frequency_quiz.js",
+    },
+    {
+      title: "Longest Common Prefix Quiz",
+      description:
+        "Practice Longest Common Prefix concepts, prefix matching, and string comparison.",
+      href: "/visualizer/string/longest-common-prefix/quiz",
+      filename: "longest_common_prefix_quiz.js",
+    },
+    {
+      title: "Anagram Check Quiz",
+      description:
+        "Practice Anagram Check concepts using sorting, hashing, and frequency comparison.",
+      href: "/visualizer/string/anagram-check/quiz",
+      filename: "anagram_check_quiz.js",
+    },
    
   ];
 

@@ -156,6 +156,22 @@ const handleMouseMove = useCallback(
   [draggingNode, onMoveNode]
 );
 
+const handleTouchMove = useCallback(
+  (e) => {
+    if (!draggingNode || !onMoveNode || !svgRef.current) return;
+    
+    const touch = e.touches[0];
+    const rect = svgRef.current.getBoundingClientRect();
+
+    onMoveNode(
+      draggingNode,
+      touch.clientX - rect.left,
+      touch.clientY - rect.top
+    );
+  },
+  [draggingNode, onMoveNode]
+);
+
 const handleMouseUp = useCallback(() => {
   setDraggingNode(null);
 }, []);
@@ -211,8 +227,11 @@ const handleMouseUp = useCallback(() => {
       style={{ cursor: interactive && edgeStart !== null ? "crosshair" : "default", minHeight: 420 }}
       onClick={handleCanvasClick}
       onMouseMove={handleMouseMove}
-onMouseUp={handleMouseUp}
-onMouseLeave={handleMouseUp}
+      onTouchMove={handleTouchMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+      onTouchEnd={handleMouseUp}
+      onTouchCancel={handleMouseUp}
     >
       <defs>
         <marker
@@ -317,6 +336,7 @@ onMouseLeave={handleMouseUp}
             key={node.id}
             onClick={(e) => handleNodeClick(e, node.id)}
             onMouseDown={(e) => handleNodeMouseDown(e, node.id)}
+            onTouchStart={(e) => handleNodeMouseDown(e, node.id)}
             onContextMenu={(e) => handleNodeRightClick(e, node.id)}
             style={{ cursor: interactive ? "pointer" : "default" }}
           >

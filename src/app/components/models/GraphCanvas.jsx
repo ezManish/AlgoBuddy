@@ -182,6 +182,22 @@ const handleTouchMove = useCallback(
   [draggingNode, onMoveNode]
 );
 
+const handleTouchMove = useCallback(
+  (e) => {
+    if (!draggingNode || !onMoveNode || !svgRef.current) return;
+    
+    const touch = e.touches[0];
+    const rect = svgRef.current.getBoundingClientRect();
+
+    onMoveNode(
+      draggingNode,
+      touch.clientX - rect.left,
+      touch.clientY - rect.top
+    );
+  },
+  [draggingNode, onMoveNode]
+);
+
 const handleMouseUp = useCallback(() => {
   setDraggingNode(null);
 }, []);
@@ -229,30 +245,20 @@ const handleMouseUp = useCallback(() => {
   };
 
   return (
-    <div className={`relative w-full h-full min-h-[420px] ${className || ""}`}>
-      <TransformWrapper
-        initialScale={1}
-        minScale={0.1}
-        maxScale={4}
-        centerOnInit={false}
-        wheel={{ step: 0.1 }}
-        panning={{ disabled: !interactive, excludedClasses: ['nodrag'] }}
-        doubleClick={{ disabled: true }}
-      >
-        <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }} contentStyle={{ width: "100%", height: "100%" }}>
-          <svg
-            ref={svgRef}
-            width="100%"
-            height="100%"
-            style={{ cursor: interactive && edgeStart !== null ? "crosshair" : (interactive ? "grab" : "default") }}
-            onClick={handleCanvasClick}
-            onMouseMove={handleMouseMove}
-            onTouchMove={handleTouchMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-            onTouchEnd={handleMouseUp}
-            onTouchCancel={handleMouseUp}
-          >
+    <svg
+      ref={svgRef}
+      width="100%"
+      height="100%"
+      className={className}
+      style={{ cursor: interactive && edgeStart !== null ? "crosshair" : "default", minHeight: 420 }}
+      onClick={handleCanvasClick}
+      onMouseMove={handleMouseMove}
+      onTouchMove={handleTouchMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+      onTouchEnd={handleMouseUp}
+      onTouchCancel={handleMouseUp}
+    >
       <defs>
         <marker
           id="arrowhead"

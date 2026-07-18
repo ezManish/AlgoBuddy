@@ -1704,6 +1704,35 @@ export default function ArenaPage() {
               </div>
             </div>
 
+            {/* Rules & Scoring Accordion */}
+            <div className="bg-white dark:bg-neutral-800 border border-slate-100 dark:border-neutral-800/80 rounded-2xl p-5 shadow-sm">
+              <h3 className="text-sm font-bold text-slate-800 dark:text-neutral-200 flex items-center gap-2 mb-4">
+                <ShieldCheck size={16} className="text-emerald-500" />
+                Rules & Scoring
+              </h3>
+              
+              <div className="space-y-2">
+                {[
+                  { q: "How is XP calculated?", a: "XP is based on problem difficulty, execution speed, and optimal memory usage. First solver bonus applies." },
+                  { q: "Penalty for wrong submissions?", a: "Each incorrect submission adds a 5-minute time penalty to your total duration." },
+                  { q: "Can I use external libraries?", a: "Only standard language libraries are allowed. External dependencies will cause compilation errors." },
+                  { q: "How does matchmaking work?", a: "You are matched with opponents within ±100 rating points to ensure fair competition." }
+                ].map((rule, idx) => (
+                  <details key={idx} className="group border border-slate-200 dark:border-neutral-700 rounded-lg bg-slate-50 dark:bg-neutral-900/50 open:bg-white dark:open:bg-neutral-800 transition-colors">
+                    <summary className="flex items-center justify-between p-3 cursor-pointer list-none font-bold text-xs text-slate-700 dark:text-neutral-300 group-open:text-primary dark:group-open:text-primary-light select-none">
+                      {rule.q}
+                      <span className="transition-transform duration-200 group-open:rotate-90">
+                        <ChevronRight size={14} className="text-slate-400 group-open:text-primary" />
+                      </span>
+                    </summary>
+                    <div className="px-3 pb-3 pt-1 text-[11px] text-slate-500 dark:text-neutral-400 leading-relaxed">
+                      {rule.a}
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </div>
+
           </aside>
 
         </div>

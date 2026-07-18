@@ -7,7 +7,9 @@ import {
   Info,
   Trash2,
   Wand2,
-  Code2
+  Code2,
+  Download,
+  AlertTriangle
 } from "lucide-react";
 import { 
   BarChart, 
@@ -396,8 +398,35 @@ const comparisonData = [
 export default function GraphVisualizer({ algorithm = "bfs", startNode: initialStartNode }) {
   const [nodes, setNodes] = useState(defaultGraphs[algorithm]?.nodes || []);
   const [edges, setEdges] = useState(defaultGraphs[algorithm]?.edges || []);
-  const [isEditing, setIsEditing] = useState(false);
   const [isPseudocodeOpen, setIsPseudocodeOpen] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    try {
+      const savedNodes = localStorage.getItem(`algobuddy_custom_nodes_${algorithm}`);
+      const savedEdges = localStorage.getItem(`algobuddy_custom_edges_${algorithm}`);
+      if (savedNodes && savedEdges) {
+        setNodes(JSON.parse(savedNodes));
+        setEdges(JSON.parse(savedEdges));
+      } else {
+        setNodes(defaultGraphs[algorithm]?.nodes || []);
+        setEdges(defaultGraphs[algorithm]?.edges || []);
+      }
+    } catch (e) {
+      console.error("Failed to parse custom graph from localStorage", e);
+      setNodes(defaultGraphs[algorithm]?.nodes || []);
+      setEdges(defaultGraphs[algorithm]?.edges || []);
+    }
+    setIsLoaded(true);
+  }, [algorithm]);
+
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem(`algobuddy_custom_nodes_${algorithm}`, JSON.stringify(nodes));
+      localStorage.setItem(`algobuddy_custom_edges_${algorithm}`, JSON.stringify(edges));
+    }
+  }, [nodes, edges, algorithm, isLoaded]);
+  const [isEditing, setIsEditing] = useState(false);
   const [targetNode, setTargetNode] = useState("");
 
   const [isDirectedManual, setIsDirectedManual] = useState(null);
@@ -449,6 +478,8 @@ export default function GraphVisualizer({ algorithm = "bfs", startNode: initialS
     if (algorithm === "adjacency-matrix") return adjacencyMatrixFrames(nodes, edges);
     return [];
   }, [nodes, edges, algorithm, initialStartNode, targetNode, isWeighted]);
+
+  const hasNegativeWeightError = algorithm === "dijkstra" && edges.some(e => Number(e.weight) < 0);
 
   const onStep = useCallback((step) => {
     // No specific local state needs to be updated here 
@@ -850,17 +881,27 @@ export default function GraphVisualizer({ algorithm = "bfs", startNode: initialS
         </div>
 
         {/* Controls Bar */}
-        <PlaybackControls
-          isPlaying={engine.isPlaying}
-          onPlayPause={togglePlay}
-          speed={engine.speed / 1000}
-          onSpeedChange={(s) => engine.setSpeed(s * 1000)}
-          onStepForward={stepForward}
-          onStepBackward={stepBackward}
-          onReset={reset}
-          progressText={`${engine.currentStep + 1} / ${frames.length || 1}`}
-          disabled={frames.length === 0}
-        />
+        <div className="flex flex-col gap-2">
+          {hasNegativeWeightError && (
+            <div className="flex items-center gap-2 rounded-lg bg-red-50 p-3 text-sm font-medium text-red-800 dark:bg-red-900/20 dark:text-red-400">
+              <AlertTriangle className="h-5 w-5 flex-shrink-0" />
+              <p>
+                <strong>Dijkstra's Algorithm cannot handle negative edge weights.</strong> It assumes all weights are non-negative to guarantee shortest paths. Please use <strong>Bellman-Ford</strong> instead, or remove the negative weights.
+              </p>
+            </div>
+          )}
+          <PlaybackControls
+            isPlaying={engine.isPlaying}
+            onPlayPause={togglePlay}
+            speed={engine.speed / 1000}
+            onSpeedChange={(s) => engine.setSpeed(s * 1000)}
+            onStepForward={stepForward}
+            onStepBackward={stepBackward}
+            onReset={reset}
+            progressText={`${engine.currentStep + 1} / ${frames.length || 1}`}
+            disabled={frames.length === 0 || hasNegativeWeightError}
+          />
+        </div>
       </div>
 
       {/* Info & Charts Section */}

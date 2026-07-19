@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useCallback, useEffect } from "react";
+import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import {
   Settings2,
   BarChart3,
@@ -428,6 +428,8 @@ export default function GraphVisualizer({ algorithm = "bfs", startNode: initialS
   }, [nodes, edges, algorithm, isLoaded]);
   const [isEditing, setIsEditing] = useState(false);
   const [targetNode, setTargetNode] = useState("");
+  const canvasContainerRef = useRef(null);
+  const [isExporting, setIsExporting] = useState(false);
 
   const [isDirectedManual, setIsDirectedManual] = useState(null);
 
@@ -725,15 +727,31 @@ export default function GraphVisualizer({ algorithm = "bfs", startNode: initialS
             )}
 
             <button
-              onClick={() => setIsPseudocodeOpen(!isPseudocodeOpen)}
-              className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-                isPseudocodeOpen 
-                  ? "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300" 
-                  : "bg-surface-100 text-surface-600 hover:bg-surface-200 dark:bg-surface-800 dark:text-surface-300"
-              }`}
+              onClick={async () => {
+                if (!canvasContainerRef.current || isExporting) return;
+                setIsExporting(true);
+                try {
+                  const html2canvas = (await import("html2canvas")).default;
+                  const canvas = await html2canvas(canvasContainerRef.current, {
+                    backgroundColor: document.documentElement.classList.contains("dark") ? "#0f172a" : "#ffffff",
+                    scale: 2, // High resolution
+                  });
+                  const dataUrl = canvas.toDataURL("image/png");
+                  const a = document.createElement("a");
+                  a.href = dataUrl;
+                  a.download = `algobuddy-${algorithm}-graph.png`;
+                  a.click();
+                } catch (err) {
+                  console.error("Export failed", err);
+                } finally {
+                  setIsExporting(false);
+                }
+              }}
+              disabled={isExporting}
+              className="flex items-center gap-2 rounded-lg bg-green-100 px-3 py-1.5 text-sm font-medium text-green-700 transition-colors hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400 dark:hover:bg-green-900/50"
             >
-              <Code2 className="h-4 w-4" />
-              Pseudocode
+              <Download className="h-4 w-4" />
+              {isExporting ? "Exporting..." : "Export PNG"}
             </button>
 
             {["dijkstra", "a-star", "ford-fulkerson"].includes(algorithm) && (
@@ -852,32 +870,25 @@ export default function GraphVisualizer({ algorithm = "bfs", startNode: initialS
             />
           </div>
 
-          {isPseudocodeOpen && ALGORITHM_PSEUDOCODE[algorithm] && (
-            <div className="w-full lg:w-80 border rounded-xl bg-white dark:bg-surface-900 border-surface-200 dark:border-surface-800 flex flex-col overflow-hidden shrink-0 shadow-sm">
-              <div className="bg-surface-50 dark:bg-surface-800/50 p-3 border-b border-surface-200 dark:border-surface-700">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-surface-500 dark:text-surface-400">
-                  Pseudocode
-                </h3>
-              </div>
-              <div className="flex-1 overflow-y-auto p-4 bg-[#1e1e1e] text-[#d4d4d4] font-mono text-xs leading-relaxed">
-                {ALGORITHM_PSEUDOCODE[algorithm].map((lineText, idx) => {
-                  const isActive = !isEditing && currentFrameData.line === idx;
-                  return (
-                    <div
-                      key={idx}
-                      className={`px-2 py-0.5 rounded whitespace-pre ${
-                        isActive
-                          ? "bg-primary/30 text-primary-300 font-bold border-l-2 border-primary"
-                          : "border-l-2 border-transparent text-surface-400"
-                      }`}
-                    >
-                      {lineText}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+        <div ref={canvasContainerRef} className="w-full relative overflow-hidden bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl min-h-[420px] flex">
+          <GraphCanvas
+            nodes={nodes}
+            edges={edges}
+            onAddNode={addNode}
+            onAddEdge={handleAddEdge}
+            onRemoveNode={removeNode}
+            onRemoveEdge={removeEdge}
+            onReverseEdge={reverseEdge}
+            onMoveNode={moveNode}
+            onUpdateEdgeWeight={handleUpdateEdgeWeight}
+            animationState={!isEditing ? currentFrameData : {}}
+            interactive={isEditing}
+            isWeighted={isWeighted}
+            isDirected={isDirected}
+            visitedSet={currentFrameData.visitedNodes}
+            currentNode={currentFrameData.currentNode}
+            className="w-full h-full flex-1"
+          />
         </div>
 
         {/* Controls Bar */}

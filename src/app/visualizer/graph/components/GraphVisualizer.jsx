@@ -7,6 +7,7 @@ import {
   Info,
   Trash2,
   Wand2,
+  Code2,
   Download,
   AlertTriangle
 } from "lucide-react";
@@ -42,6 +43,7 @@ import {
   adjacencyListFrames,
   adjacencyMatrixFrames
 } from "../utils/algorithms";
+import { ALGORITHM_PSEUDOCODE } from "../constants/pseudocode";
 
 const weightedAlgorithms = new Set(["dijkstra", "bellman-ford", "floyd-warshall", "prim", "kruskal", "a-star", "ford-fulkerson"]);
 const directedAlgorithms = new Set(["dijkstra", "bellman-ford", "floyd-warshall", "topological-sort", "kosaraju", "tarjan", "a-star", "ford-fulkerson"]);
@@ -396,6 +398,7 @@ const comparisonData = [
 export default function GraphVisualizer({ algorithm = "bfs", startNode: initialStartNode }) {
   const [nodes, setNodes] = useState(defaultGraphs[algorithm]?.nodes || []);
   const [edges, setEdges] = useState(defaultGraphs[algorithm]?.edges || []);
+  const [isPseudocodeOpen, setIsPseudocodeOpen] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -423,7 +426,7 @@ export default function GraphVisualizer({ algorithm = "bfs", startNode: initialS
       localStorage.setItem(`algobuddy_custom_edges_${algorithm}`, JSON.stringify(edges));
     }
   }, [nodes, edges, algorithm, isLoaded]);
-  const [isEditing, setIsEditing] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
   const [targetNode, setTargetNode] = useState("");
   const canvasContainerRef = useRef(null);
   const [isExporting, setIsExporting] = useState(false);
@@ -845,6 +848,27 @@ export default function GraphVisualizer({ algorithm = "bfs", startNode: initialS
             )}
           </div>
         </div>
+        <div className="flex flex-col lg:flex-row gap-6 items-stretch min-h-[420px]">
+          <div className="flex-1 border rounded-xl overflow-hidden bg-white dark:bg-surface-900 border-surface-200 dark:border-surface-800 flex flex-col">
+            <GraphCanvas
+              nodes={nodes}
+              edges={edges}
+              onAddNode={addNode}
+              onAddEdge={handleAddEdge}
+              onRemoveNode={removeNode}
+              onRemoveEdge={removeEdge}
+              onReverseEdge={reverseEdge}
+              onMoveNode={moveNode}
+              onUpdateEdgeWeight={handleUpdateEdgeWeight}
+              animationState={!isEditing ? currentFrameData : {}}
+              interactive={isEditing}
+              isWeighted={isWeighted}
+              isDirected={isDirected}
+              visitedSet={currentFrameData.visitedNodes}
+              currentNode={currentFrameData.currentNode}
+              className="w-full h-full flex-1"
+            />
+          </div>
 
         <div ref={canvasContainerRef} className="w-full relative overflow-hidden bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl min-h-[420px] flex">
           <GraphCanvas

@@ -496,6 +496,8 @@ export default function ArenaPage() {
                     ringDashoffset={ringDashoffset}
                     ringCircumference={ringCircumference}
                     openMatchmakingModal={openMatchmakingModal}
+                    currentRank={currentRank}
+                    rankedMatches={rankedMatches}
                   />
                 )}
 

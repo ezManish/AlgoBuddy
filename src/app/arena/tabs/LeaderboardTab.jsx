@@ -1,4 +1,4 @@
-import { Trophy, Star, TrendingUp, Search, X, Navigation } from "lucide-react";
+import { Trophy, Star, TrendingUp, Search, X, Navigation, TrendingDown, Flame, Minus } from "lucide-react";
 import Image from "next/image";
 import { toast } from "react-hot-toast";
 

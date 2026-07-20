@@ -473,7 +473,7 @@ export default function ArenaPage() {
                     openMatchmakingModal={openMatchmakingModal}
                     openCreateDuelModal={openCreateDuelModal}
                   />
-                )}}
+                )}
 
             {activeTab !== "home" && (
               <div className="bg-white dark:bg-neutral-800 border border-slate-100 dark:border-neutral-800/80 rounded-2xl p-6 shadow-sm">
@@ -484,7 +484,7 @@ export default function ArenaPage() {
                     liveMatches={liveMatches}
                     handleWatchLive={handleWatchLive}
                   />
-                )}}
+                )}
 
                 {activeTab === "ranked" && (
                   <RankedTab 
@@ -494,7 +494,7 @@ export default function ArenaPage() {
                     ringCircumference={ringCircumference}
                     openMatchmakingModal={openMatchmakingModal}
                   />
-                )}}
+                )}
 
                 {activeTab === "friend" && (
                   <FriendTab 
@@ -503,17 +503,17 @@ export default function ArenaPage() {
                     handleJoinDuel={handleJoinDuel}
                     openCreateDuelModal={openCreateDuelModal}
                   />
-                )}}
+                )}
 
                 {activeTab === "leaderboard" && (
                   <LeaderboardTab leaderboard={leaderboard} leaderboardFilter={leaderboardFilter} setLeaderboardFilter={setLeaderboardFilter} searchQuery={searchQuery} setSearchQuery={setSearchQuery} expandedRow={expandedRow} setExpandedRow={setExpandedRow} />
-                )}}
+                )}
                 {activeTab === "history" && (
                   <HistoryTab />
-                )}}
+                )}
                 {activeTab === "streak" && (
                   <StreakTab profile={profile} />
-                )}}
+                )}
                 {activeTab === "tournaments" && (
                   <TournamentsTab 
                     tournamentFilter={tournamentFilter}
@@ -521,11 +521,11 @@ export default function ArenaPage() {
                     tournamentTimeLeft={tournamentTimeLeft}
                     isLoadingTournaments={isLoadingTournaments}
                   />
-                )}}
+                )}
                 
                 {activeTab === "badges" && (
                   <BadgesTab badgeCategory={badgeCategory} setBadgeCategory={setBadgeCategory} />
-                )}}}
+                )}
               </div>
             )}
           </main>

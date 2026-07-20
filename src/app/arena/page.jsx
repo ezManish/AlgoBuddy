@@ -471,6 +471,10 @@ export default function ArenaPage() {
                     leaderboard={leaderboard}
                     openMatchmakingModal={openMatchmakingModal}
                     openCreateDuelModal={openCreateDuelModal}
+                    matchHistory={matchHistory}
+                    handleTabChange={handleTabChange}
+                    handleWatchLive={handleWatchLive}
+                    ensureLoggedIn={ensureLoggedIn}
                   />
                 )}
 

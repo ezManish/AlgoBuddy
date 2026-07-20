@@ -1,4 +1,5 @@
 import { Zap, Swords, Target, Trophy, Shield, TrendingUp, Play } from "lucide-react";
+import UpcomingTournament from "@/app/components/ui/UpcomingTournament";
 
 const getInitials = (name) => {
   if (!name) return "?";
@@ -12,7 +13,7 @@ const ACHIEVEMENT_BADGES = [
   { title: "Arena Champion", icon: "⚔️" },
 ];
 
-export default function HomeTab({ profile, currentUserStats, leaderboard, openMatchmakingModal, openCreateDuelModal }) {
+export default function HomeTab({ profile, currentUserStats, leaderboard, openMatchmakingModal, openCreateDuelModal, matchHistory, handleTabChange, handleWatchLive, ensureLoggedIn }) {
   return (
     <>
                 {/* Hero Podium Card */}

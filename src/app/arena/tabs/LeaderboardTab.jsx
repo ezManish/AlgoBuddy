@@ -1,6 +1,6 @@
 import { Trophy, Star, TrendingUp, Search, X, Navigation } from "lucide-react";
 import Image from "next/image";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 
 export default function LeaderboardTab({ leaderboard, leaderboardFilter, setLeaderboardFilter, searchQuery, setSearchQuery, expandedRow, setExpandedRow }) {
   return (

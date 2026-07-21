@@ -19,28 +19,7 @@ export function getSupabaseConfig() {
   return config;
 }
 
-export async function getAuthenticatedUser() {
-  // If the middleware has already verified the user, use that directly
-  // to avoid a redundant getUser() network call.
-  try {
-    const nextHeaders = await import("next/headers");
-    const headersList = await nextHeaders.headers();
-    const middlewareUserId = headersList.get("x-user-id");
-    const middlewareUserEmail = headersList.get("x-user-email");
-    if (middlewareUserId) {
-      return {
-        success: true,
-        user: {
-          id: middlewareUserId,
-          email: middlewareUserEmail || "",
-        },
-      };
-    }
-  } catch {
-    // headers() is not available in all contexts (e.g. WebSocket server).
-    // Fall through to the normal getUser() path.
-  }
-
+export async function getAuthenticatedUser() {  
   const config = getSupabaseConfig();
   if (!config) {
     console.error("[Authentication Helper] Config error: Missing or invalid Supabase environment variables.");
@@ -77,13 +56,33 @@ export async function getAuthenticatedUser() {
     // Race getUser() against a 5-second timeout so that network issues
     // (ConnectTimeoutError to Supabase) fail fast instead of blocking
     // every API route for the full 10-second fetch timeout.
-    const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("Auth check timed out")), 5000)
-    );
-    const { data, error } = await Promise.race([
-      client.auth.getUser(),
-      timeoutPromise,
-    ]);
+    let timeoutId;
+    // Resolve with a sentinel instead of rejecting+silencing:
+    // .catch(()=>{}) previously caused race() to return undefined,
+    // making the destructure below throw TypeError → mis-classified as AUTH_PROVIDER_ERROR.
+    const timeoutPromise = new Promise((resolve) => {
+      timeoutId = setTimeout(
+        () => resolve({ data: null, error: null, __timedOut: true }),
+        5000
+      );
+    });
+
+    let raceResult;
+    try {
+      raceResult = await Promise.race([
+        client.auth.getUser(),
+        timeoutPromise,
+      ]);
+    } finally {
+      clearTimeout(timeoutId);
+    }
+
+    if (raceResult?.__timedOut) {
+      console.warn("[Authentication Helper] Auth check timed out — treating as unauthenticated.");
+      return { success: false, type: "UNAUTHENTICATED" };
+    }
+
+    const { data, error } = raceResult;
 
     if (error) {
       console.error("[Authentication Helper] Auth provider error during getUser:", error.message || error);
@@ -97,10 +96,10 @@ export async function getAuthenticatedUser() {
 
     return { success: true, user: data.user };
   } catch (err) {
-    // Swallow timeout and network errors — return UNAUTHENTICATED so the
-    // caller gets a 401 quickly rather than a 500 after a long hang.
-    if (err.message === "Auth check timed out" || err?.cause?.code === "UND_ERR_CONNECT_TIMEOUT") {
-      console.warn("[Authentication Helper] Auth check timed out — treating as unauthenticated.");
+    // Network-level errors (e.g. UND_ERR_CONNECT_TIMEOUT) still reach here.
+    // The explicit timeout case is now handled above via the __timedOut sentinel.
+    if (err?.cause?.code === "UND_ERR_CONNECT_TIMEOUT") {
+      console.warn("[Authentication Helper] Network timeout — treating as unauthenticated.");
       return { success: false, type: "UNAUTHENTICATED" };
     }
     console.error("[Authentication Helper] Critical exception during authentication verification:", err.message || err);

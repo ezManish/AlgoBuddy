@@ -89,6 +89,40 @@ export const sections = [
             name: "Anagram Check",
             path: "/visualizer/string/anagram-check",
           },
+          {
+            name: "Longest Common Prefix",
+            path: "/visualizer/string/longest-common-prefix",
+          },
+        ],
+      },
+      {
+        title: "Pattern Matching",
+        items: [
+          {
+            name: "KMP Algorithm",
+            path: "/visualizer/string/kmp-algorithm",
+          },
+          {
+            name: "Rabin-Karp",
+            path: "/visualizer/string/rabin-karp",
+          },
+          {
+            name: "Z Algorithm",
+            path: "/visualizer/string/z-algorithm",
+          },
+        ],
+      },
+      {
+        title: "Interview Problems",
+        items: [
+          {
+            name: "Longest Non-Repeating Substring",
+            path: "/visualizer/string/longest-substring",
+          },
+          {
+            name: "Minimum Window Substring",
+            path: "/visualizer/string/minimum-window",
+          },
         ],
       },
     ],
